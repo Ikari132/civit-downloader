@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "outDir": "./static/",
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "moduleResolution": "node",
+    "module": "ESNext",
+    "target": "ESNext",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "removeComments": true,
+    "importsNotUsedAsValues": "error",
+    "isolatedModules": true,
+    "preserveValueImports": true,
+    "types": [
+      "svelte",
+      "svelte/store",
+      "svelte/motion",
+      "svelte/transition",
+      "svelte/animate",
+      "svelte/easing",
+      "chrome"
+    ],
+  }
+}

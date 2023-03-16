@@ -1,0 +1,12 @@
+.vscode
+node_modules
+.DS_Store
+static/*.js
+static/*.js.map
+static/*.css
+static/*.txt
+static/build
+dist
+release
+test/background.js
+source
