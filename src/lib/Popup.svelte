@@ -10,13 +10,13 @@
   chrome.runtime.sendMessage<IAction>({ name: "popup-open" });
 </script>
 
-<div class="popup">
+<main class="popup">
   <Button />
   <h1>Popup</h1>
   <div class="message">
     {message}
   </div>
-</div>
+</main>
 
 <style>
   .popup {

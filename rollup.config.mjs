@@ -38,7 +38,7 @@ export default [
       name: 'options',
       file: `${outputDir}/options.js`,
     },
-    plugins: getPlugins({ name: "options" })
+    plugins: getPlugins({ name: "options" }),
   },
   {
     input: 'src/popup.ts',
@@ -48,7 +48,7 @@ export default [
       name: 'popup',
       file: `${outputDir}/popup.js`,
     },
-    plugins: getPlugins({ name: "popup" })
+    plugins: getPlugins({ name: "popup" }),
   },
   {
     input: 'src/service_worker.ts',

@@ -1,7 +1,7 @@
 <script lang="ts">
 </script>
 
-<div>Options</div>
+<main>Options</main>
 
 <style>
 </style>

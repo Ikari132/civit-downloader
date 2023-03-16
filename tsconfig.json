@@ -19,7 +19,8 @@
       "svelte/transition",
       "svelte/animate",
       "svelte/easing",
-      "chrome"
+      "chrome",
+      "node"
     ],
   }
 }
