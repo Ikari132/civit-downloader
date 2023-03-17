@@ -7,19 +7,13 @@
   "scripts": {
     "build": "pnpm build:chrome",
     "build:chrome": "rollup -c && pnpm lint && web-ext build -s ./static --overwrite-dest --artifacts-dir=dist/chrome",
-    "build:firefox": "rollup -c && web-ext build -s ./static --overwrite-dest --artifacts-dir=dist/firefox",
     "watch": "rollup -c -w",
+    "open": "pnpm open:chrome",
+    "open:chrome": "web-ext run -s ./static --target=chromium",
     "rollup": "rollup -c",
-    "run": "web-ext run -s ./static --target=chromium",
-    "run:chrome": "web-ext run -s ./static --target=chromium",
-    "run:firefox": "web-ext run -s ./static",
-    "test": "node test/index.js --trace-warnings",
-    "test:unit-build": "rollup -c && mocha test/test.js --require mock-local-storage --require ./test/globals.js --timeout 20000",
-    "test:unit": "mocha test/test.js --require mock-local-storage --require ./test/globals.js --timeout 10000",
-    "tests": "playwright test",
+    "test": "playwright test",
     "lint": "eslint src",
-    "lint:svelte": "svelte-check",
-    "lint:ext": "web-ext lint -s ./static"
+    "lint:svelte": "svelte-check"
   },
   "devDependencies": {
     "@playwright/test": "^1.31.2",
