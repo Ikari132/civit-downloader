@@ -64,4 +64,18 @@ export default [
       typescript(),
     ]
   },
+  {
+    input: 'src/content.ts',
+    output: {
+      sourcemap: true,
+      format: 'iife',
+      name: 'content',
+      file: `${outputDir}/content.js`,
+    },
+    plugins: [
+      resolve({ browser: true }),
+      commonjs(),
+      typescript(),
+    ]
+  },
 ];

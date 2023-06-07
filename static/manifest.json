@@ -1,13 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "Svelte extension",
-  "description": "Svelte extension",
+  "name": "Civit model downloader",
+  "description": "Extension for download models with full metadata from Civit",
   "version": "0.0.1",
   "action": {
     "browser_style": true,
     "default_icon": "icons/icon48.png",
     "default_popup": "popup.html",
-    "default_title": "Svelte extension"
+    "default_title": "Civit model downloader"
   },
   "icons": {
     "16": "icons/icon16.png",
@@ -20,7 +20,14 @@
     "service_worker": "build/service_worker.js",
     "type": "module"
   },
-  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": ["http://civitai.com/*", "https://civitai.com/*"],
+      "js": ["build/content.js"],
+      "css": ["styles/content.css"]
+    }
+  ],
+  "permissions": ["storage", "activeTab", "scripting", "downloads"],
   "options_ui": {
     "page": "options.html",
     "open_in_tab": true

@@ -1,21 +1,49 @@
 <script lang="ts">
-  import type { IAction } from "../types";
-  import Button from "./components/Button.svelte";
+  let storagePromise = new Promise<{
+    saveAll: boolean;
+    saveModel: boolean;
+  }>((resolve) => {
+    chrome.storage.local.get(["save-all", "save-model"], (result) => {
+      console.log(result);
 
-  let message = null;
-  chrome.runtime.onMessage.addListener((action: IAction) => {
-    message = action.data.message;
+      resolve({
+        saveAll: result["save-all"] === "true",
+        saveModel: result["save-model"] === "true",
+      });
+    });
   });
+  function handleCheckboxChange(name: string, e: Event) {
+    const checked: boolean = (e.target as any).checked;
 
-  chrome.runtime.sendMessage<IAction>({ name: "popup-open" });
+    chrome.storage.local.set({ [name]: `${checked}` });
+  }
 </script>
 
 <main class="popup">
-  <Button />
-  <h1>Popup</h1>
-  <div class="message">
-    {message}
-  </div>
+  {#await storagePromise}
+    <p>Loading...</p>
+  {:then r}
+    <label>
+      <h3>Save all images</h3>
+      <input
+        type="checkbox"
+        name="save-all"
+        id="save-all"
+        checked={r.saveAll}
+        on:change={(e) => handleCheckboxChange("save-all", e)}
+      />
+    </label>
+    <label>
+      <h3>Save model</h3>
+      <input
+        type="checkbox"
+        name="save-model"
+        id="save-model"
+        checked={r.saveModel}
+        on:change={(e) => handleCheckboxChange("save-model", e)}
+      />
+    </label>
+  {/await}
 </main>
 
 <style>
@@ -27,7 +55,9 @@
     border: none;
     font-family: sans-serif;
   }
-  .message {
-    padding: 10px;
+
+  label {
+    display: flex;
+    align-items: center;
   }
 </style>

@@ -1,5 +1,5 @@
 {
-  "name": "svelte-extension",
+  "name": "civit-downloader",
   "version": "0.0.1",
   "main": "index.js",
   "author": "Anton Aksionau <ikari808@gmail.com>",
@@ -40,7 +40,7 @@
     "svelte": "^3.58.0",
     "svelte-check": "^3.3.0",
     "svelte-preprocess": "^5.0.1",
-    "typescript": "^5.0.4",
+    "typescript": "4.9.5",
     "web-ext": "^7.6.2"
   }
 }
