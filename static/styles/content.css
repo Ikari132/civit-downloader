@@ -26,15 +26,38 @@
   cursor: pointer;
   background: #343434;
 }
+
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
 .cd-extension-button:before {
+  --angle: 45deg;
+  --size: -0.1rem;
+
   content: "";
   display: block;
   position: absolute;
   border-radius: 4px;
-  top: -0.1em;
-  bottom: -0.1em;
-  right: -0.1em;
-  left: -0.1em;
+  top: var(--size);
+  bottom: var(--size);
+  right: var(--size);
+  left: var(--size);
   z-index: -1;
-  background: linear-gradient(to right, red, orange);
+  background: linear-gradient(45deg, red, orange);
+}
+
+.cd-extension-loading:before {
+  --angle: 0deg;
+  --size: -0.2rem;
+  background: linear-gradient(var(--angle), red, orange);
+  animation: flow-gradient 2s infinite ease-in-out;
+}
+
+@keyframes flow-gradient {
+  to {
+    --angle: 360deg;
+  }
 }

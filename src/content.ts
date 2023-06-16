@@ -2,6 +2,9 @@ import type { IAction } from "./types";
 const modelApi = "https://civitai.com/api/v1/models";
 
 let currentURL = null;
+let currentVersion = null;
+let currentModel = null;
+
 let btn = null;
 let btnParent = null;
 
@@ -29,21 +32,29 @@ async function load() {
   if (!btnParent) {
     return;
   }
+  const url = new URL(window.location.href).pathname;
+  const version = new URL(window.location.href).searchParams.get("modelVersionId");
+
+  if (url.includes("models") && (currentURL !== url || currentVersion !== version)) {
+    currentURL = url;
+    currentVersion = version;
+    const urlParts = url.split("/");
+    const index = urlParts.indexOf("models");
+    const id = urlParts[index + 1];
+    currentModel = id;
+  }
+
   if (btnParent.contains(btn)) {
     return;
   }
 
-  const url = new URL(window.location.href).toString();
-  if (url.includes("models") && currentURL !== url) {
-    currentURL = url;
-    const id = url.split("/").at(-2);
-
+  if (url.includes("models")) {
     const button = document.createElement("button");
     button.innerText = "Download full data";
     button.classList.add("cd-extension-button");
 
     button.addEventListener("click", async () => {
-      downloadData(id);
+      downloadData(currentModel);
     })
 
     let width = 150;
@@ -56,7 +67,6 @@ async function load() {
       "font-weight": "600",
       "font-size": "14px",
     })
-
     btnParent.appendChild(button);
     if (btn) {
       btn.remove();
@@ -66,16 +76,38 @@ async function load() {
 }
 load();
 
+function getFilenameParts(filename: string) {
+  const lastDotIndex = filename.lastIndexOf('.');
+  if (lastDotIndex === -1) {
+    return null; // No file extension found
+  }
+
+  const ext = filename.slice(lastDotIndex + 1);
+  const name = filename.slice(0, lastDotIndex);
+  return { name, ext };
+}
 async function downloadData(id: string) {
   const modelData = await (await fetch(`${modelApi}/${id}`)).json();
+
+  const modelVersion = currentVersion ? modelData.modelVersions.find(v => `${v.id}` === currentVersion) : modelData.modelVersions[0];
+
   const blob = new Blob([JSON.stringify(modelData)], { type: "text/info" });
-
   const blobURL = URL.createObjectURL(blob);
-  const fileName = modelData.modelVersions[0].files[0].name;
-  const modelURL = modelData.modelVersions[0].downloadUrl;
-  const images = modelData.modelVersions[0].images?.map(i => i.url);
 
-  const name = fileName.split(".").at(0);
+  const versionBlob = new Blob([JSON.stringify(modelVersion)], { type: "text/info" });
+  const versionBlobURL = URL.createObjectURL(versionBlob);
 
-  chrome.runtime.sendMessage<IAction>({ name: "download", data: { blobURL, modelURL, name, fileName, images } });
+  const fileName = modelVersion.files[0].name;
+  const modelURL = modelVersion.downloadUrl;
+  const images = modelVersion.images?.map(i => i.url);
+
+  const { name } = getFilenameParts(fileName);
+
+  btn.classList.add("cd-extension-loading");
+  chrome.runtime.onMessage.addListener((request) => {
+    if (request.name === "download-ready") {
+      btn.classList.remove("cd-extension-loading");
+    }
+  })
+  chrome.runtime.sendMessage<IAction>({ name: "download", data: { blobURL, versionBlobURL, modelURL, name, fileName, images } });
 }
