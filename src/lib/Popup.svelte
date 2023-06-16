@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Icon from "./components/Icon.svelte";
+
   let storagePromise = new Promise<{
     saveAll: boolean;
     saveModel: boolean;
@@ -23,6 +25,7 @@
   {#await storagePromise}
     <p>Loading...</p>
   {:then r}
+    <h4><Icon /> Civit Downloader</h4>
     <label>
       <h3>Save all images</h3>
       <input
@@ -49,8 +52,8 @@
 <style>
   .popup {
     width: 200px;
-    height: 200px;
-    padding: 10px;
+    height: 150px;
+    /* padding: 10px; */
     margin: 0;
     border: none;
     font-family: sans-serif;
@@ -59,5 +62,18 @@
   label {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    height: 40px;
+    background: #f2f2f2;
+    margin: 5px 0;
+    padding: 10px;
+    cursor: pointer;
+  }
+  h4 {
+    font-size: 0.8rem;
+    margin: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 </style>

@@ -27,9 +27,5 @@
       "css": ["styles/content.css"]
     }
   ],
-  "permissions": ["storage", "activeTab", "scripting", "downloads"],
-  "options_ui": {
-    "page": "options.html",
-    "open_in_tab": true
-  }
+  "permissions": ["storage", "activeTab", "scripting", "downloads"]
 }

@@ -31,16 +31,6 @@ function getPlugins({ name }) {
 
 export default [
   {
-    input: 'src/options.ts',
-    output: {
-      sourcemap: true,
-      format: 'iife',
-      name: 'options',
-      file: `${outputDir}/options.js`,
-    },
-    plugins: getPlugins({ name: "options" }),
-  },
-  {
     input: 'src/popup.ts',
     output: {
       sourcemap: true,
