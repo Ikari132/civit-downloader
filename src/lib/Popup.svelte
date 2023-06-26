@@ -1,19 +1,9 @@
 <script lang="ts">
   import Icon from "./components/Icon.svelte";
+  import { getOptions } from "./helpers";
 
-  let storagePromise = new Promise<{
-    saveAll: boolean;
-    saveModel: boolean;
-  }>((resolve) => {
-    chrome.storage.local.get(["save-all", "save-model"], (result) => {
-      console.log(result);
+  let storagePromise = getOptions();
 
-      resolve({
-        saveAll: result["save-all"] === "true",
-        saveModel: result["save-model"] === "true",
-      });
-    });
-  });
   function handleCheckboxChange(name: string, e: Event) {
     const checked: boolean = (e.target as any).checked;
 
@@ -51,12 +41,14 @@
 
 <style>
   .popup {
-    width: 200px;
+    width: 220px;
     height: 150px;
-    /* padding: 10px; */
     margin: 0;
     border: none;
     font-family: sans-serif;
+
+    background: #f8fafc;
+    background: #fff;
   }
 
   label {
@@ -64,16 +56,31 @@
     align-items: center;
     justify-content: space-between;
     height: 40px;
-    background: #f2f2f2;
+    background: #f8fafc;
+    color: #1e293b;
     margin: 5px 0;
     padding: 10px;
     cursor: pointer;
   }
   h4 {
     font-size: 0.8rem;
-    margin: 10px;
+    margin: 0;
+    padding: 20px 10px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    color: #64748b;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .popup {
+      background: #1e293b;
+    }
+    label {
+      color: #e2e8f0;
+      background: #0f172a;
+    }
+    h4 {
+      color: #e2e8f0;
+    }
   }
 </style>

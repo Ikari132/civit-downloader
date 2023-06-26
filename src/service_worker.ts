@@ -1,3 +1,4 @@
+import { getOptions } from "./lib/helpers";
 import type { IAction } from "./types";
 
 async function handleDownload(data) {
@@ -10,14 +11,7 @@ async function handleDownload(data) {
     filename: `${data.data.name}/${data.data.name}.civitai.full.info`
   });
 
-  const { saveAll, saveModel } = await new Promise<{ saveAll: boolean, saveModel: boolean }>((resolve) => {
-    chrome.storage.local.get(["save-all", "save-model"], (result) => {
-      resolve({
-        saveAll: result['save-all'] === "true",
-        saveModel: result['save-model'] === "true"
-      })
-    })
-  })
+  const { saveAll, saveModel } = await getOptions();
 
   const downloads = [];
   if (saveModel) {
