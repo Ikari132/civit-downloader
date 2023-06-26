@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Civit model downloader",
-  "description": "Extension for download models with full metadata from Civit",
-  "version": "0.0.1",
+  "description": "Extension for download models with full metadata from Civitai",
+  "version": "1.0.0",
   "action": {
     "browser_style": true,
     "default_icon": "icons/icon48.png",

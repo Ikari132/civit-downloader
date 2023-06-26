@@ -1,6 +1,6 @@
 {
   "name": "civit-downloader",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "main": "index.js",
   "author": "Anton Aksionau <ikari808@gmail.com>",
   "license": "MIT",
