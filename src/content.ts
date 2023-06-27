@@ -1,80 +1,63 @@
 import type { IAction } from "./types";
+import Button from "./lib/components/Button.svelte";
+import type { SvelteComponentTyped } from "svelte";
+
 const modelApi = "https://civitai.com/api/v1/models";
 
 let currentURL = null;
 let currentVersion = null;
 let currentModel = null;
 
-let btn = null;
-let btnParent = null;
+let btn: SvelteComponentTyped = null;
 
 const body = document.querySelector("body");
-let observerTimeout = null;
+
 const observer = new MutationObserver(() => {
-  if (observerTimeout) {
-    clearTimeout(observerTimeout);
+  checkURL();
+  if (currentURL?.includes("models")) {
+    createButton();
+  } else {
+    btn?.$destroy();
+    btn = null;
   }
-  observerTimeout = setTimeout(() => {
-    const links = document.querySelectorAll("a");
-    for (const link of links) {
-      if (link.href.includes("api/download/models")) {
-        const parent = link.parentElement;
-        btnParent = parent;
-        break;
-      }
-    }
-    load();
-  }, 100)
 });
 observer.observe(body, { childList: true, subtree: true });
 
-async function load() {
-  if (!btnParent) {
-    return;
-  }
+function checkURL() {
   const url = new URL(window.location.href).pathname;
   const version = new URL(window.location.href).searchParams.get("modelVersionId");
 
-  if (url.includes("models") && (currentURL !== url || currentVersion !== version)) {
-    currentURL = url;
-    currentVersion = version;
-    const urlParts = url.split("/");
-    const index = urlParts.indexOf("models");
-    const id = urlParts[index + 1];
-    currentModel = id;
-  }
+  if (!url.includes("models")) {
+    currentURL = null;
+    currentVersion = null;
+    currentModel = null;
 
-  if (btnParent.contains(btn)) {
     return;
   }
 
-  if (url.includes("models")) {
-    const button = document.createElement("button");
-    button.innerText = "Download full data";
-    button.classList.add("cd-extension-button");
+  if (currentURL !== url || currentVersion !== version) {
+    const urlParts = url.split("/");
+    const index = urlParts.indexOf("models");
+    const id = urlParts[index + 1];
 
-    button.addEventListener("click", async () => {
-      downloadData(currentModel);
-    })
-
-    let width = 150;
-    const rect = btnParent.getBoundingClientRect();
-    width = rect.width;
-
-    Object.assign(button.style, {
-      "width": `${width}px`,
-      "height": "36px",
-      "font-weight": "600",
-      "font-size": "14px",
-    })
-    btnParent.appendChild(button);
-    if (btn) {
-      btn.remove();
-    }
-    btn = button;
+    currentURL = url;
+    currentVersion = version;
+    currentModel = id;
   }
 }
-load();
+async function createButton() {
+  if (btn) {
+    return;
+  }
+  const button = new Button({
+    target: document.body,
+  });
+
+  button.$on("click", () => {
+    downloadData(currentModel);
+  })
+  btn = button;
+}
 
 function getFilenameParts(filename: string) {
   const lastDotIndex = filename.lastIndexOf('.');
@@ -103,10 +86,15 @@ async function downloadData(id: string) {
 
   const { name } = getFilenameParts(fileName);
 
-  btn.classList.add("cd-extension-loading");
+  btn.$set({ state: "loading" });
   chrome.runtime.onMessage.addListener((request) => {
     if (request.name === "download-ready") {
-      btn.classList.remove("cd-extension-loading");
+      btn.$set({ state: "success" });
+
+      setTimeout(() => {
+        btn.$set({ state: null });
+      }, 1000);
+
     }
   })
   chrome.runtime.sendMessage<IAction>({ name: "download", data: { blobURL, versionBlobURL, modelURL, name, fileName, images } });

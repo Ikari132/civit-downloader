@@ -24,7 +24,7 @@
     {
       "matches": ["http://civitai.com/*", "https://civitai.com/*"],
       "js": ["build/content.js"],
-      "css": ["styles/content.css"]
+      "css": ["build/content.css"]
     }
   ],
   "permissions": ["storage", "activeTab", "scripting", "downloads"]

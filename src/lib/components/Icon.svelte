@@ -1,9 +1,7 @@
 <svg
   width="16px"
   height="16px"
-  version="1.1"
   viewBox="0 0 135.47 135.47"
-  xml:space="preserve"
   xmlns="http://www.w3.org/2000/svg"
   ><g transform="translate(-67.652 -26.321)"
     ><g

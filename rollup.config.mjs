@@ -62,10 +62,6 @@ export default [
       name: 'content',
       file: `${outputDir}/content.js`,
     },
-    plugins: [
-      resolve({ browser: true }),
-      commonjs(),
-      typescript(),
-    ]
+    plugins: getPlugins({ name: "content" }),
   },
 ];
