@@ -5,7 +5,7 @@
   export let state: "loading" | "success" | "error" | null = null;
 
   let top = 180;
-  let left = 20;
+  let right = 18;
 
   onMount(() => {
     document.addEventListener("scroll", () => {
@@ -21,7 +21,7 @@
   $: success = state === "success";
 </script>
 
-<div style="top:{top}px;right:{left}px;">
+<div style="top:{top}px;right:{right}px;">
   <button class:loading class:success on:click>
     <Icon />
     <div class="loading" />
