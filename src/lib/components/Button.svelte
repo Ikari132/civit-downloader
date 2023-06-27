@@ -9,7 +9,7 @@
 
   onMount(() => {
     document.addEventListener("scroll", () => {
-      if (scrollY > 0) {
+      if (scrollY > 10) {
         top = 80;
       } else {
         top = 180;
