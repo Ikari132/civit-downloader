@@ -4,6 +4,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
+import copy from 'rollup-plugin-copy'
 
 const production = !process.env.ROLLUP_WATCH
 const outputDir = "static/build";
@@ -52,6 +53,13 @@ export default [
       resolve({ browser: true }),
       commonjs(),
       typescript(),
+      copy({
+        targets: [
+          { src: 'assets/icons', dest: 'static/' },
+          { src: 'assets/styles', dest: 'static/' },
+          { src: 'assets/popup.html', dest: 'static/' }
+        ]
+      })
     ]
   },
   {
