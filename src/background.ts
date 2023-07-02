@@ -13,12 +13,10 @@ async function handleDownload(data) {
   browser.downloads.download({
     url: blobURL,
     filename: `${data.data.name}/${data.data.name}.civitai.info`,
-    saveAs: true,
   });
   browser.downloads.download({
     url: versionBlobURL,
     filename: `${data.data.name}/${data.data.name}.civitai.full.info`,
-    saveAs: true,
   });
 
   const { saveAll, saveModel } = await getOptions();

@@ -40,14 +40,16 @@
 </main>
 
 <style>
+  :global(html) {
+    background: #fff;
+  }
   .popup {
     width: 220px;
-    height: 150px;
+    height: 200px;
     margin: 0;
     border: none;
     font-family: sans-serif;
 
-    background: #f8fafc;
     background: #fff;
   }
 
@@ -61,19 +63,28 @@
     margin: 5px 0;
     padding: 10px;
     cursor: pointer;
+    font-size: 16px;
   }
   h4 {
     font-size: 0.8rem;
+    font-size: 14px;
     margin: 0;
     padding: 20px 10px;
     display: flex;
     align-items: center;
     color: #64748b;
   }
+  h3 {
+    font-size: 14px;
+  }
 
   @media (prefers-color-scheme: dark) {
+    :global(html) {
+      background: #1e293b;
+    }
     .popup {
       background: #1e293b;
+      overflow: hidden;
     }
     label {
       color: #e2e8f0;
