@@ -9,12 +9,11 @@ let currentVersion = null;
 let currentModel = null;
 
 let btn: SvelteComponentTyped = null;
-
 const body = document.querySelector("body");
 
 const observer = new MutationObserver(() => {
   checkURL();
-  if (currentURL?.includes("models")) {
+  if (currentURL?.includes("models") && currentModel) {
     createButton();
   } else {
     btn?.$destroy();
@@ -87,6 +86,7 @@ async function downloadData(id: string) {
   const { name } = getFilenameParts(fileName);
 
   btn.$set({ state: "loading" });
+
   chrome.runtime.onMessage.addListener((request) => {
     if (request.name === "download-ready") {
       btn.$set({ state: "success" });
@@ -96,6 +96,22 @@ async function downloadData(id: string) {
       }, 1000);
 
     }
+    if (request.name === "download-error") {
+      btn.$set({ state: null });
+      console.error(request);
+    }
   })
-  chrome.runtime.sendMessage<IAction>({ name: "download", data: { blobURL, versionBlobURL, modelURL, name, fileName, images } });
+  chrome.runtime.sendMessage<IAction>({
+    name: "download",
+    data: {
+      modelData,
+      modelVersion,
+      blobURL,
+      versionBlobURL,
+      modelURL,
+      name,
+      fileName,
+      images
+    }
+  });
 }
