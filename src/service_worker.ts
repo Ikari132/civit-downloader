@@ -17,7 +17,8 @@ async function handleDownload(data) {
   if (saveModel) {
     const modelPr = chrome.downloads.download({
       url: data.data.modelURL,
-      filename: `${data.data.name}/${data.data.fileName}`
+      filename: `${data.data.name}/${data.data.fileName}`,
+
     })
     downloads.push(modelPr);
   }
