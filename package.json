@@ -3,7 +3,7 @@
   "version": "1.1.1",
   "main": "index.js",
   "author": "Anton Aksionau <ikari808@gmail.com>",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
     "build": "pnpm build:chrome",
     "build:chrome": "rollup -c && pnpm lint && web-ext build -s ./static --overwrite-dest --artifacts-dir=dist/chrome",
