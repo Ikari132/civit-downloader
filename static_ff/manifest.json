@@ -3,6 +3,11 @@
   "name": "Civit model downloader",
   "description": "Extension for download models with full metadata from Civitai",
   "version": "1.1.1",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "civitdownloader@aksionau.com"
+    }
+  },
   "action": {
     "default_icon": "icons/icon48.png",
     "default_popup": "popup.html",
