@@ -54,7 +54,11 @@ async function createButton() {
 
   button.$on("click", () => {
     downloadData(currentModel);
-  })
+  });
+  button.$on("options", () => {
+    chrome.runtime.sendMessage({ name: "showOptions" });
+  });
+
   btn = button;
 }
 

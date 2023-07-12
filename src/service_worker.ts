@@ -61,7 +61,10 @@ chrome.runtime.onMessage.addListener((data: IAction) => {
           chrome.tabs.sendMessage(tab.id, { name: "download-error", err })
         })
       })
-      break
+      break;
+    case "showOptions":
+      chrome.runtime.openOptionsPage();
+      break;
     default:
       break;
   }

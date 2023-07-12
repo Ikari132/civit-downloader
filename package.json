@@ -46,5 +46,8 @@
     "svelte-preprocess": "^5.0.1",
     "typescript": "4.9.5",
     "web-ext": "^7.6.2"
+  },
+  "dependencies": {
+    "flowbite-svelte-icons": "^0.2.5"
   }
 }

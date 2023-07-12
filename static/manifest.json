@@ -20,6 +20,10 @@
     "service_worker": "build/service_worker.js",
     "type": "module"
   },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
   "content_scripts": [
     {
       "matches": ["http://civitai.com/*", "https://civitai.com/*"],

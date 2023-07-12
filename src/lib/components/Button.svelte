@@ -1,8 +1,11 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
   import Icon from "./Icon.svelte";
+  import { CogOutline } from "flowbite-svelte-icons";
 
   export let state: "loading" | "success" | "error" | null = null;
+
+  const dispatch = createEventDispatcher();
 
   let top = 180;
   let right = 18;
@@ -21,20 +24,26 @@
   $: success = state === "success";
 </script>
 
-<div style="top:{top}px;right:{right}px;">
+<div class="contanier" style="top:{top}px;right:{right}px;">
   <button class:loading class:success on:click>
     <Icon />
     <div class="loading" />
     Download all
   </button>
+
+  <button on:click={() => dispatch("options")}>
+    <CogOutline width="20" height="20" />
+  </button>
 </div>
 
 <style>
-  div {
+  .contanier {
     z-index: 999999;
     position: fixed;
-  }
 
+    display: flex;
+    gap: 10px;
+  }
   button {
     position: relative;
     box-sizing: border-box;

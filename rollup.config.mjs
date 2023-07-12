@@ -42,6 +42,16 @@ export default [
     plugins: getPlugins({ name: "popup" }),
   },
   {
+    input: 'src/options.ts',
+    output: {
+      sourcemap: true,
+      format: 'iife',
+      name: 'options',
+      file: `${outputDir}/options.js`,
+    },
+    plugins: getPlugins({ name: "options" }),
+  },
+  {
     input: 'src/service_worker.ts',
     output: {
       sourcemap: true,
@@ -57,7 +67,8 @@ export default [
         targets: [
           { src: 'assets/icons', dest: 'static/' },
           { src: 'assets/styles', dest: 'static/' },
-          { src: 'assets/popup.html', dest: 'static/' }
+          { src: 'assets/popup.html', dest: 'static/' },
+          { src: 'assets/options.html', dest: 'static/' }
         ]
       })
     ]
