@@ -55,13 +55,6 @@ export const getSettingsStore = () => {
 
   const loading = new Promise<IState>((resolve) => {
     chrome.storage.local.get().then((result) => {
-      // chrome.storage.local.remove()
-      const saveAll =
-        result["save-all"] === undefined ? "true" : result["save-all"];
-      const saveModel =
-        result["save-model"] === undefined ? "true" : result["save-model"];
-
-      
       const state = { ...defaultState, ...result } as IState;
 
       w.update((v) => {

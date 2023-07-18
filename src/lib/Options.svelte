@@ -1,6 +1,6 @@
 <script lang="ts">
   import Icon from "./components/Icon.svelte";
-  import { getOptions, getSettingsStore } from "./helpers";
+  import { getSettingsStore } from "./helpers";
 
   const settingsStore = getSettingsStore();
 </script>
