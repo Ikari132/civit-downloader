@@ -3,6 +3,26 @@ export interface IAction {
   data?: Record<string, any>;
 }
 
+export type TAction = IDownloadAction | IShowOptionsAction;
+
+export interface IDownloadAction {
+  name: "download";
+  data: IDownloadActionData;
+}
+export interface IShowOptionsAction {
+  name: "showOptions";
+}
+export interface IDownloadActionData {
+  modelData: any;
+  modelVersion: any;
+  blobURL: string;
+  versionBlobURL: string;
+  modelURL: string;
+  name: string;
+  fileName: string;
+  images: string[];
+}
+
 export type TImageSize = "preview" | "original";
 export type TImageName = "model" | "original";
 

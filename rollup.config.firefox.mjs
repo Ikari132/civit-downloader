@@ -68,7 +68,7 @@ export default [
           { src: 'assets/icons', dest: 'static_ff/' },
           { src: 'assets/styles', dest: 'static_ff/' },
           { src: 'assets/popup.html', dest: 'static_ff/' },
-          { src: 'assets/options.html', dest: 'static/' }
+          { src: 'assets/options.html', dest: 'static_ff/' }
         ]
       })
     ]

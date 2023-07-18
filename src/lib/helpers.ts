@@ -107,3 +107,34 @@ export const getSettingsStore = () => {
   }
   return { ...w, set, update, getValue };
 };
+
+export function parseExt(ext: string) {
+  if (ext[0] === ".") {
+    return ext.slice(1);
+  }
+  return ext;
+}
+
+export function downloadImages(images: string[], state: IState, modelName: string) {
+  if (state.imagesLimit) {
+    images = images.slice(0, state.imagesLimit);
+  }
+
+  return images.map((url: string, i: number) => {
+    const urlParts = url.split("/");
+    const imageName = urlParts.at(-1);
+    const imageExt = imageName.split(".").at(-1);
+    const originalImageUrl =
+      urlParts.slice(0, -2).join("/") + `/${imageName}`;
+
+    const modelNameWithCount = `${modelName}_${i}.${imageExt}`;
+
+    const finalImageName = state.imageName === "original" ? imageName : modelNameWithCount;
+    const finalImageUrl = state.imageSize === "original" ? originalImageUrl : url;
+
+    return chrome.downloads.download({
+      url: finalImageUrl,
+      filename: `${modelName}/${finalImageName}`
+    })
+  })
+}

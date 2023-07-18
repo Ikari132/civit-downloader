@@ -16,7 +16,8 @@
     "rollup": "rollup -c",
     "test": "playwright test",
     "lint": "eslint src",
-    "lint:svelte": "svelte-check"
+    "lint:svelte": "svelte-check",
+    "lint:webext": "web-ext lint -s ./static_ff"
   },
   "devDependencies": {
     "@playwright/test": "^1.31.2",

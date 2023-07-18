@@ -1,49 +1,64 @@
-import { getOptions } from "./lib/helpers";
-import type { IAction } from "./types";
+import { downloadImages, getSettingsStore, parseExt } from "./lib/helpers";
+import type { IDownloadActionData, TAction } from "./types";
 
 declare const browser: typeof chrome;
 
-async function handleDownload(data) {
-  const blob = new Blob([JSON.stringify(data.data.modelData)], { type: "text/info" });
-  const blobURL = URL.createObjectURL(blob);
+async function handleDownload(data: IDownloadActionData) {
+  const settingsStore = getSettingsStore();
 
-  const versionBlob = new Blob([JSON.stringify(data.data.modelVersion)], { type: "text/info" });
-  const versionBlobURL = URL.createObjectURL(versionBlob);
+  await settingsStore.getValue().loading;
 
-  browser.downloads.download({
-    url: blobURL,
-    filename: `${data.data.name}/${data.data.name}.civitai.info`,
-  });
-  browser.downloads.download({
-    url: versionBlobURL,
-    filename: `${data.data.name}/${data.data.name}.civitai.full.info`,
-  });
-
-  const { saveAll, saveModel } = await getOptions();
+  const { state } = settingsStore.getValue();
 
   const downloads = [];
-  if (saveModel) {
+
+  if (state.saveFullData) {
+    const blob = new Blob([JSON.stringify(data.modelData)], { type: "text/info" });
+    const blobURL = URL.createObjectURL(blob);
+
+    const ext = parseExt(state.fullDataExt);
+    const name = `${data.name}/${data.name}.${ext}`;
+
+    const fullDataPr = browser.downloads.download({
+      url: blobURL,
+      filename: name,
+    });
+
+    downloads.push(fullDataPr);
+  }
+
+  if (state.saveVersionData) {
+    const versionBlob = new Blob([JSON.stringify(data.modelVersion)], { type: "text/info" });
+    const versionBlobURL = URL.createObjectURL(versionBlob);
+
+    const ext = parseExt(state.versionDataExt);
+    const name = `${data.name}/${data.name}.${ext}`;
+    const versionPr = browser.downloads.download({
+      url: versionBlobURL,
+      filename: name,
+    });
+
+    downloads.push(versionPr);
+  }
+
+  if (state.saveModel) {
     const modelPr = chrome.downloads.download({
-      url: data.data.modelURL,
-      filename: `${data.data.name}/${data.data.fileName}`,
+      url: data.modelURL,
+      filename: `${data.name}/${data.fileName}`,
 
     })
     downloads.push(modelPr);
   }
-  if (data.data.images) {
-    if (saveAll) {
-      data.data.images.forEach((image, i) => {
-        const imagePr = chrome.downloads.download({
-          url: image,
-          filename: `${data.data.name}/${data.data.name}_${i}.png`
-        })
-        downloads.push(imagePr);
-      })
+
+  if (data.images) {
+    if (state.saveImages) {
+      const imagesPr = downloadImages(data.images, state, data.name);
+      downloads.push(...imagesPr);
     }
 
     const previewPr = chrome.downloads.download({
-      url: data.data.images[0],
-      filename: `${data.data.name}/${data.data.name}.preview.png`
+      url: data.images[0],
+      filename: `${data.name}/${data.name}.preview.png`
     })
     downloads.push(previewPr);
   }
@@ -57,10 +72,10 @@ async function getCurrentTab() {
   return tab;
 }
 
-chrome.runtime.onMessage.addListener((data: IAction) => {
-  switch (data.name) {
+chrome.runtime.onMessage.addListener((action: TAction) => {
+  switch (action.name) {
     case "download":
-      handleDownload(data).then(() => {
+      handleDownload(action.data).then(() => {
         getCurrentTab().then((tab) => {
           chrome.tabs.sendMessage(tab.id, { name: "download-ready" })
         })
@@ -69,7 +84,10 @@ chrome.runtime.onMessage.addListener((data: IAction) => {
           chrome.tabs.sendMessage(tab.id, { name: "download-error", err })
         })
       })
-      break
+      break;
+    case "showOptions":
+      chrome.runtime.openOptionsPage();
+      break;
     default:
       break;
   }
