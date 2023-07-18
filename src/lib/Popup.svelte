@@ -1,81 +1,78 @@
 <script lang="ts">
+  import { CogOutline } from "flowbite-svelte-icons";
   import Icon from "./components/Icon.svelte";
-  import { getOptions } from "./helpers";
 
-  let storagePromise = getOptions();
-
-  function handleCheckboxChange(name: string, e: Event) {
-    const checked: boolean = (e.target as any).checked;
-
-    chrome.storage.local.set({ [name]: `${checked}` });
+  function handleOptionsOpen() {
+    chrome.runtime.sendMessage({ name: "showOptions" });
   }
 </script>
 
 <main class="popup">
-  {#await storagePromise}
-    <p>Loading...</p>
-  {:then r}
-    <h4><Icon /> Civit Downloader</h4>
-    <label>
-      <h3>Save all images</h3>
-      <input
-        type="checkbox"
-        name="save-all"
-        id="save-all"
-        checked={r.saveAll}
-        on:change={(e) => handleCheckboxChange("save-all", e)}
-      />
-    </label>
-    <label>
-      <h3>Save model</h3>
-      <input
-        type="checkbox"
-        name="save-model"
-        id="save-model"
-        checked={r.saveModel}
-        on:change={(e) => handleCheckboxChange("save-model", e)}
-      />
-    </label>
-  {/await}
+  <h4><Icon /> Civit Downloader</h4>
+
+  <div class="controls">
+    <button on:click={handleOptionsOpen}>
+      <CogOutline width="20" height="20" />
+      <span style="padding-left: 10px;">Options</span>
+    </button>
+  </div>
 </main>
 
 <style>
+  button {
+    position: relative;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10px;
+
+    border-radius: 4px;
+    border: none;
+
+    width: 100%;
+    height: 36px;
+    font-weight: 600;
+    font-size: 14px;
+
+    background: #f8fafc;
+    color: #000;
+    transition: all 0.3s;
+
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica,
+      Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+
+    cursor: pointer;
+  }
+  button:hover {
+    background: #cbd5e1;
+  }
   :global(html) {
     background: #fff;
   }
   .popup {
-    width: 220px;
-    height: 200px;
+    width: 150px;
+    /* height: 200px; */
     margin: 0;
     border: none;
     font-family: sans-serif;
 
     background: #fff;
+    padding: 0 10px;
   }
-
-  label {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 40px;
-    background: #f8fafc;
-    color: #1e293b;
-    margin: 5px 0;
-    padding: 10px;
-    cursor: pointer;
-    font-size: 16px;
+  .controls {
+    padding: 10px 0;
   }
   h4 {
     font-size: 0.8rem;
     font-size: 14px;
     margin: 0;
-    padding: 20px 10px;
+    padding: 20px 0;
     display: flex;
     align-items: center;
     color: #64748b;
-  }
-  h3 {
-    font-size: 14px;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -86,8 +83,11 @@
       background: #1e293b;
       overflow: hidden;
     }
-    label {
-      color: #e2e8f0;
+    button {
+      color: #fff;
+      background: #334155;
+    }
+    button:hover {
       background: #0f172a;
     }
     h4 {

@@ -61,6 +61,7 @@ export const getSettingsStore = () => {
       const saveModel =
         result["save-model"] === undefined ? "true" : result["save-model"];
 
+      
       const state = { ...defaultState, ...result } as IState;
 
       w.update((v) => {
