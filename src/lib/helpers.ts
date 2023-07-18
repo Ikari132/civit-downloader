@@ -62,7 +62,6 @@ export const getSettingsStore = () => {
         result["save-model"] === undefined ? "true" : result["save-model"];
 
       const state = { ...defaultState, ...result } as IState;
-      console.log("result", result);
 
       w.update((v) => {
         return {
@@ -71,13 +70,11 @@ export const getSettingsStore = () => {
         };
       });
 
-      setTimeout(() => {
-        resolve(state);
-      }, 1000);
+      resolve(state);
     });
   });
 
-  let currentState = null;
+  let currentState: TStore<IState> = null;
   w.subscribe((state) => {
     currentState = state;
   });
@@ -91,25 +88,22 @@ export const getSettingsStore = () => {
 
   type TUpdater = (state: TStore<IState>) => TStore<IState>;
   const update = (updater: TUpdater) => {
-    console.log("updater");
     w.update(updater);
-    console.log(currentState);
   };
 
   const set = (state: TStore<IState>) => {
-    console.log("set");
     state.updating = chrome.storage.local
       .set(currentState.state)
-      .then(() => {
-        console.log("chrome storage updated");
-      })
       .catch((e) => {
         console.error(e);
         w.set({ ...currentState, error: e.message });
       });
 
     w.set(state);
-    console.log(state, currentState);
   };
-  return { ...w, set, update };
+
+  const getValue = () => {
+    return currentState;
+  }
+  return { ...w, set, update, getValue };
 };
