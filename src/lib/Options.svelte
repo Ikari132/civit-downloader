@@ -14,7 +14,14 @@
     <p>Loading...</p>
   {:then _}
     <nav>
-      <h4 class="logo"><Icon /> Civit Downloader</h4>
+      <div class="nav-main">
+        <h4 class="logo"><Icon /> Civit Downloader</h4>
+      </div>
+      <div class="nav-footer">
+        <a href="https://ko-fi.com/L3L4HYJ79" target="_blank">
+          <button type="button" class="support-btn"> Support ❤️ </button>
+        </a>
+      </div>
     </nav>
     <section>
       <label>
@@ -152,12 +159,46 @@
     padding: 10px;
     background: #f8fafc;
 
+    height: 100%;
     min-height: 100vh;
     max-height: 100vh;
   }
   nav {
     width: 200px;
-    height: 100%;
+    min-height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-right: 10px;
+  }
+  .nav-footer {
+    display: flex;
+    padding: 10px;
+    padding-bottom: 0;
+  }
+  .nav-footer a {
+    width: 100%;
+  }
+  .support-btn {
+    border-radius: 4px;
+    border: none;
+
+    width: 100%;
+    min-width: 100%;
+
+    height: 36px;
+    font-weight: 600;
+    font-size: 14px;
+
+    background: #e2e8f0;
+    color: #000;
+    transition: all 0.3s;
+
+    cursor: pointer;
+  }
+  .support-btn:hover {
+    background: #cbd5e1;
   }
   section {
     flex: 1;
@@ -246,6 +287,14 @@
       background: #000;
 
       box-shadow: none;
+    }
+
+    .support-btn {
+      color: #fff;
+      background: #334155;
+    }
+    .support-btn:hover {
+      background: #0f172a;
     }
   }
 </style>
