@@ -39,7 +39,7 @@
       <h4>Images</h4>
       <label>
         <div class="description">
-          <h3>Save all images</h3>
+          <h3>Save images</h3>
         </div>
         <input
           type="checkbox"
@@ -72,6 +72,21 @@
         >
           <option value="model">Use model name</option>
           <option value="original">Original</option>
+        </select>
+      </label>
+      <label class:disabled={!$settingsStore.state.imageFrom}>
+        <div class="description">
+          <h3>Images from</h3>
+        </div>
+        <select
+          name="image-from"
+          id="image-from"
+          bind:value={$settingsStore.state.imageFrom}
+        >
+          <option value="creator">Creator</option>
+          <option value="gallery">Gallery</option>
+          <option value="all">Creator and Gallery</option>
+          <option value="model">Model card(first 10 images only)</option>
         </select>
       </label>
       <label class:disabled={!$settingsStore.state.saveImages}>
