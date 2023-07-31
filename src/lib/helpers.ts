@@ -37,7 +37,8 @@ export const getSettingsStore = () => {
     saveFullData: true,
     saveVersionData: true,
 
-    imagesLimit: 0,
+    imagesLimit: 50,
+    // [todo] remove
     galleryLimit: 10,
 
     fullDataExt: "civit.full.info",
