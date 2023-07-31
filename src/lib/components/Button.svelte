@@ -28,7 +28,7 @@
   <button class:loading class:success on:click>
     <Icon />
     <div class="loading" />
-    Download all
+    Download
   </button>
 
   <button on:click={() => dispatch("options")}>
