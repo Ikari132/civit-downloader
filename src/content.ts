@@ -1,8 +1,12 @@
 import type { IAction } from "./types";
 import Button from "./lib/components/Button.svelte";
 import type { SvelteComponentTyped } from "svelte";
+import type { IModel } from "./types/model";
+import type { IImage } from "./types/image";
+import { fetchAllImages } from "./lib/helpers";
 
 const modelApi = "https://civitai.com/api/v1/models";
+const imageApi = "https://civitai.com/api/v1/images";
 
 let currentURL = null;
 let currentVersion = null;
@@ -73,7 +77,7 @@ function getFilenameParts(filename: string) {
   return { name, ext };
 }
 async function downloadData(id: string) {
-  const modelData = await (await fetch(`${modelApi}/${id}`)).json();
+  const modelData: IModel = await (await fetch(`${modelApi}/${id}`)).json();
 
   const modelVersion = currentVersion ? modelData.modelVersions.find(v => `${v.id}` === currentVersion) : modelData.modelVersions[0];
 
@@ -85,7 +89,25 @@ async function downloadData(id: string) {
 
   const fileName = modelVersion.files[0].name;
   const modelURL = modelVersion.downloadUrl;
+
+  const allImages: IImage[] = await fetchAllImages(imageApi, modelVersion.id);
+
+  const modelAuthor = modelData.creator.username;
+  const imagesByAuthor = allImages.reduce((acc, i) => {
+    if (i.username === modelAuthor) {
+      acc.creator.push(i);
+    } else {
+      acc.others.push(i);
+    }
+    return acc;
+  }, { creator: [], others: [] });
+
+
   const images = modelVersion.images?.map(i => i.url);
+
+  const creatorImages = imagesByAuthor.creator.map(i => i.url);
+  const galleryImages = imagesByAuthor.others.map(i => i.url);
+
 
   const { name } = getFilenameParts(fileName);
 
@@ -115,7 +137,9 @@ async function downloadData(id: string) {
       modelURL,
       name,
       fileName,
-      images
+      images,
+      creatorImages,
+      galleryImages,
     }
   });
 }

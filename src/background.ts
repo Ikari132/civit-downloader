@@ -52,7 +52,7 @@ async function handleDownload(data: IDownloadActionData) {
 
   if (data.images) {
     if (state.saveImages) {
-      const imagesPr = downloadImages(data.images, state, data.name);
+      const imagesPr = downloadImages(data, state);
       downloads.push(...imagesPr);
     }
 

@@ -42,14 +42,15 @@ async function handleDownload(data: IDownloadActionData) {
 
   if (data.images) {
     if (state.saveImages) {
-      const imagesPr = downloadImages(data.images, state, data.name);
+      const imagesPr = downloadImages(data, state);
       downloads.push(...imagesPr);
     }
 
     const previewPr = chrome.downloads.download({
       url: data.images[0],
       filename: `${data.name}/${data.name}.preview.png`
-    })
+    });
+
     downloads.push(previewPr);
   }
 
