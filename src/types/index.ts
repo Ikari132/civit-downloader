@@ -21,6 +21,9 @@ export interface IDownloadActionData {
   name: string;
   fileName: string;
   images: string[];
+  galleryImages: string[];
+  creatorImages: string[];
+
 }
 
 export type TImageSize = "preview" | "original";
@@ -29,6 +32,7 @@ export type TImageName = "model" | "original";
 export interface IState {
   imageSize: TImageSize;
   imageName: TImageName;
+  imageFrom: "creator" | "gallery" | "all" | "model";
 
   saveModel: boolean;
   saveImages: boolean;
@@ -46,3 +50,4 @@ export interface IState {
   downloadHistory: string[];
   downloadHistoryMeta: Record<string, any>;
 }
+
