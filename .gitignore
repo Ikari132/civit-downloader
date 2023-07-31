@@ -12,6 +12,7 @@ dist
 release
 test/background.js
 source
+source.zip
 /test-results/
 /playwright-report/
 /playwright/.cache/
