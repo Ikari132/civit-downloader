@@ -1,4 +1,4 @@
-import { downloadImages, getSettingsStore, parseExt } from "./lib/helpers";
+import { downloadImages, getSettingsStore, parseExt, updateHistory } from "./lib/helpers";
 import type { IDownloadActionData, TAction } from "./types";
 
 async function handleDownload(data: IDownloadActionData) {
@@ -54,7 +54,9 @@ async function handleDownload(data: IDownloadActionData) {
     downloads.push(previewPr);
   }
 
-  return Promise.all(downloads);
+  return Promise.all(downloads).then(() => {
+    updateHistory(data.modelVersion.id, state);
+  })
 }
 async function getCurrentTab() {
   const queryOptions = { active: true, lastFocusedWindow: true };

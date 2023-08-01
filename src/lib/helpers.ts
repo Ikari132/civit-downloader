@@ -58,6 +58,7 @@ export const getSettingsStore = () => {
 
   const loading = new Promise<IState>((resolve) => {
     chrome.storage.local.get().then((result) => {
+      console.log("result", result);
       const state = { ...defaultState, ...result } as IState;
 
       w.update((v) => {
@@ -175,5 +176,19 @@ export async function fetchAllImages(url: string, modelVersionId: number) {
   } catch (error) {
     console.error('Error fetching images:', error);
     throw error;
+  }
+}
+
+export async function updateHistory(modelVersionId: number, state: IState) {
+  if (!state.saveModel) {
+    return;
+  }
+
+  const { downloadHistory = [] } = await chrome.storage.local.get("downloadHistory");
+
+
+  if (downloadHistory.indexOf(modelVersionId) === -1) {
+    downloadHistory.push(modelVersionId);
+    await chrome.storage.local.set({ downloadHistory });
   }
 }

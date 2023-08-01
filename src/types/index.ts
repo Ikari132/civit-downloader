@@ -1,3 +1,5 @@
+import type { IModel, IModelVersion } from "./model";
+
 export interface IAction {
   name: string;
   data?: Record<string, any>;
@@ -13,8 +15,8 @@ export interface IShowOptionsAction {
   name: "showOptions";
 }
 export interface IDownloadActionData {
-  modelData: any;
-  modelVersion: any;
+  modelData: IModel;
+  modelVersion: IModelVersion;
   blobURL: string;
   versionBlobURL: string;
   modelURL: string;
