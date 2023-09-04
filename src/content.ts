@@ -32,7 +32,8 @@ function checkURL() {
   if (!version) {
     const linkEls: NodeListOf<HTMLAnchorElement> = document.querySelector("main").querySelectorAll("[data-button='true']");
     const downloadLinkEl = Array.from(linkEls).find(link => link.href?.includes("/api/download/models/"));
-    const idFromButton = downloadLinkEl?.getAttribute("href").replace("/api/download/models/", "");
+    let idFromButton = downloadLinkEl?.getAttribute("href").replace("/api/download/models/", "");
+    idFromButton = idFromButton.split("?")[0];
 
     if (idFromButton) {
       version = idFromButton;
