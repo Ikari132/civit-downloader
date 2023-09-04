@@ -84,6 +84,7 @@ export const getSettingsStore = () => {
             if (modelVersion?.id) {
               state.downloadHistoryMeta[modelVersion.id] = {
                 name: modelVersion.name,
+                modelName: (modelVersion as any)?.model?.name,
                 modelId: modelVersion.modelId,
                 preview: modelVersion.images[0]
               }
@@ -223,6 +224,7 @@ export async function updateHistory(modelVersion: IModelVersion, state: IState) 
     downloadHistory.push(modelVersionId);
     downloadHistoryMeta[modelVersionId] = {
       name: modelVersion.name,
+      modelName: (modelVersion as any)?.model?.name,
       modelId: modelVersion.modelId,
       preview: modelVersion.images[0],
       date: new Date().valueOf(),

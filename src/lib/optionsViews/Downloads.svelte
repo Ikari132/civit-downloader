@@ -32,7 +32,7 @@
       <div class="description">
         <a target="_blank" href={getLink(download, meta)}>
           <img width="50" height="50" src={meta?.preview?.url} alt="preview" />
-          <h3>{meta?.name}</h3>
+          <h3>{meta?.modelName || meta?.name}</h3>
         </a>
       </div>
     {:else}
