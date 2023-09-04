@@ -1,12 +1,25 @@
 <script lang="ts">
   import type { TWritableStore } from "../helpers";
-
+  import { TrashBinOutline } from "flowbite-svelte-icons";
   export let settingsStore: TWritableStore;
-
-  console.log($settingsStore.state);
 
   function getLink(versionId: string, meta: any) {
     return `https://civitai.com/models/${meta.modelId}?modelVersionId=${versionId}`;
+  }
+
+  function handleDelete(versionId: string) {
+    const { downloadHistory, downloadHistoryMeta } = $settingsStore.state;
+
+    $settingsStore.state.downloadHistory = downloadHistory.filter(
+      (d) => d !== versionId
+    );
+
+    $settingsStore.state.downloadHistoryMeta = Object.keys(downloadHistoryMeta)
+      .filter((k) => `${k}` !== `${versionId}`)
+      .reduce((obj, key) => {
+        obj[key] = downloadHistoryMeta[key];
+        return obj;
+      }, {});
   }
 </script>
 
@@ -30,6 +43,13 @@
         />
         <h3>{$settingsStore.state.downloadHistoryMeta[download].name}</h3>
       </a>
+    </div>
+    <div style="cursor:pointer;">
+      <TrashBinOutline
+        width="20"
+        height="20"
+        on:click={() => handleDelete(download)}
+      />
     </div>
   </div>
 {/each}

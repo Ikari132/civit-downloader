@@ -64,7 +64,7 @@ export const getSettingsStore = () => {
       const state = { ...defaultState, ...result } as IState;
 
       let delay = 0;
-      const metaPr = state.downloadHistory.filter(v => !state.downloadHistoryMeta[v]).map((v) => {
+      const metaPr = state.downloadHistory.filter(v => !state.downloadHistoryMeta[`${v}`]).map((v) => {
         delay += 200;
         return new Promise<IModelVersion>((res) => {
           setTimeout(() => {
@@ -215,16 +215,16 @@ export async function updateHistory(modelVersion: IModelVersion, state: IState) 
   }
   const modelVersionId = modelVersion.id;
 
-  const { downloadHistory = [], downloadHistoryMeta = {} } = await chrome.storage.local.get("downloadHistory");
+  const { downloadHistory = [], downloadHistoryMeta = {} } = await chrome.storage.local.get();
 
   if (downloadHistory.indexOf(modelVersionId) === -1) {
     downloadHistory.push(modelVersionId);
     downloadHistoryMeta[modelVersionId] = {
       name: modelVersion.name,
       modelId: modelVersion.modelId,
-      preview: modelVersion.images[0]
+      preview: modelVersion.images[0],
+      date: new Date().valueOf(),
     }
-
     await chrome.storage.local.set({ downloadHistory, downloadHistoryMeta });
   }
 }

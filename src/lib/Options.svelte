@@ -22,16 +22,22 @@
         <h4 class="logo"><Icon /> Civit Downloader</h4>
       </div>
       <div class="menu">
-        <button class="support-btn" on:click={() => (view = "general")}
-          >General</button
+        <button
+          class="support-btn"
+          class:active={view === "general"}
+          on:click={() => (view = "general")}>General</button
         >
-        <button class="support-btn" on:click={() => (view = "downloads")}
-          >Downloads</button
+        <button
+          class="support-btn"
+          class:active={view === "downloads"}
+          on:click={() => (view = "downloads")}>Downloads</button
         >
       </div>
       <div class="nav-footer">
         <a href="https://ko-fi.com/L3L4HYJ79" target="_blank">
-          <button type="button" class="support-btn"> Support ❤️ </button>
+          <button type="button" class="support-btn">
+            Support <span class="beat">❤️</span>
+          </button>
         </a>
       </div>
     </nav>
@@ -119,6 +125,9 @@
   .support-btn:hover {
     background: #cbd5e1;
   }
+  .support-btn.active {
+    border: solid 1px #0f172a;
+  }
   section {
     flex: 1;
     overflow: auto;
@@ -143,6 +152,22 @@
     color: #64748b;
   }
 
+  .beat {
+    display: inline-block;
+    animation: 4s beat infinite;
+  }
+  @keyframes beat {
+    0%,
+    50%,
+    100% {
+      transform: scale(1, 1);
+    }
+    30%,
+    80% {
+      transform: scale(0.92, 0.95);
+    }
+  }
+
   @media (prefers-color-scheme: dark) {
     :global(html) {
       background: #1e293b;
@@ -165,6 +190,9 @@
     }
     .support-btn:hover {
       background: #0f172a;
+    }
+    .support-btn.active {
+      border: solid 1px #f2f2f2;
     }
   }
 </style>
