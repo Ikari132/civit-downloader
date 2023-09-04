@@ -1,6 +1,8 @@
-import { writable } from "svelte/store";
+import { writable, type Writable } from "svelte/store";
 import type { ICheckHistoryAction, IDownloadActionData, IState } from "../types";
 import type { IImageResponce } from "../types/image";
+import type { IModelVersion } from "../types/model";
+import { modelVersionApi } from "./constants";
 
 export async function getOptions() {
   return new Promise<{ saveAll: boolean, saveModel: boolean }>((resolve) => {
@@ -24,6 +26,7 @@ export type TStore<T> = {
   updating: Promise<any>;
   error: string | null;
 };
+export type TWritableStore = Writable<TStore<IState>>;
 export const getSettingsStore = () => {
   const defaultState: IState = {
     imageSize: "preview",
@@ -58,17 +61,44 @@ export const getSettingsStore = () => {
 
   const loading = new Promise<IState>((resolve) => {
     chrome.storage.local.get().then((result) => {
-      console.log("result", result);
       const state = { ...defaultState, ...result } as IState;
 
-      w.update((v) => {
-        return {
-          ...v,
-          state,
-        };
+      let delay = 0;
+      const metaPr = state.downloadHistory.filter(v => !state.downloadHistoryMeta[v]).map((v) => {
+        delay += 200;
+        return new Promise<IModelVersion>((res) => {
+          setTimeout(() => {
+            fetch(`${modelVersionApi}/${v}`).then(res => res.json()).then(data => {
+              res(data);
+            });
+          }, delay);
+        });
       });
 
-      resolve(state);
+      Promise.allSettled(metaPr).then((res) => {
+        res.map((pr) => {
+          if (pr.status === "fulfilled") {
+            const modelVersion = pr.value
+            if (modelVersion?.id) {
+              state.downloadHistoryMeta[modelVersion.id] = {
+                name: modelVersion.name,
+                modelId: modelVersion.modelId,
+                preview: modelVersion.images[0]
+              }
+            }
+          }
+        })
+        chrome.storage.local.set({ downloadHistoryMeta: state.downloadHistoryMeta });
+      }).then(() => {
+        w.update((v) => {
+          return {
+            ...v,
+            state,
+          };
+        });
+
+        resolve(state);
+      })
     });
   });
 
@@ -179,17 +209,23 @@ export async function fetchAllImages(url: string, modelVersionId: number) {
   }
 }
 
-export async function updateHistory(modelVersionId: number, state: IState) {
+export async function updateHistory(modelVersion: IModelVersion, state: IState) {
   if (!state.saveModel) {
     return;
   }
+  const modelVersionId = modelVersion.id;
 
-  const { downloadHistory = [] } = await chrome.storage.local.get("downloadHistory");
-
+  const { downloadHistory = [], downloadHistoryMeta = {} } = await chrome.storage.local.get("downloadHistory");
 
   if (downloadHistory.indexOf(modelVersionId) === -1) {
     downloadHistory.push(modelVersionId);
-    await chrome.storage.local.set({ downloadHistory });
+    downloadHistoryMeta[modelVersionId] = {
+      name: modelVersion.name,
+      modelId: modelVersion.modelId,
+      preview: modelVersion.images[0]
+    }
+
+    await chrome.storage.local.set({ downloadHistory, downloadHistoryMeta });
   }
 }
 

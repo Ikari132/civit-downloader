@@ -4,9 +4,7 @@ import type { SvelteComponentTyped } from "svelte";
 import type { IModel } from "./types/model";
 import type { IImage } from "./types/image";
 import { fetchAllImages } from "./lib/helpers";
-
-const modelApi = "https://civitai.com/api/v1/models";
-const imageApi = "https://civitai.com/api/v1/images";
+import { imageApi, modelApi } from "./lib/constants";
 
 let currentURL = null;
 let currentVersion = null;

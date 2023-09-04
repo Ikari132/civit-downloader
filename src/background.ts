@@ -64,7 +64,7 @@ async function handleDownload(data: IDownloadActionData) {
   }
 
   return Promise.all(downloads).then(() => {
-    updateHistory(data.modelVersion.id, state);
+    updateHistory(data.modelVersion, state);
   })
 }
 async function getCurrentTab() {
