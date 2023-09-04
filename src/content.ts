@@ -26,55 +26,59 @@ const observer = new MutationObserver(() => {
 observer.observe(body, { childList: true, subtree: true });
 
 function checkURL() {
-  const url = new URL(window.location.href).pathname;
-  let version = new URL(window.location.href).searchParams.get("modelVersionId");
+  try {
+    const url = new URL(window.location.href).pathname;
+    let version = new URL(window.location.href).searchParams.get("modelVersionId");
 
-  if (!version) {
-    const linkEls: NodeListOf<HTMLAnchorElement> = document.querySelector("main").querySelectorAll("[data-button='true']");
-    const downloadLinkEl = Array.from(linkEls).find(link => link.href?.includes("/api/download/models/"));
-    let idFromButton = downloadLinkEl?.getAttribute("href").replace("/api/download/models/", "");
-    idFromButton = idFromButton.split("?")[0];
+    if (!version) {
+      const linkEls: NodeListOf<HTMLAnchorElement> = document.querySelector("main").querySelectorAll("[data-button='true']");
+      const downloadLinkEl = Array.from(linkEls).find(link => link.href?.includes("/api/download/models/"));
+      let idFromButton = downloadLinkEl?.getAttribute("href").replace("/api/download/models/", "");
+      idFromButton = idFromButton?.split("?")[0];
 
-    if (idFromButton) {
-      version = idFromButton;
+      if (idFromButton) {
+        version = idFromButton;
+      }
     }
-  }
 
-  if (!url.includes("models")) {
-    currentURL = null;
-    currentVersion = null;
-    currentModel = null;
-    alreadyDownloaded = false;
+    if (!url.includes("models")) {
+      currentURL = null;
+      currentVersion = null;
+      currentModel = null;
+      alreadyDownloaded = false;
 
-    return;
-  }
+      return;
+    }
 
-  if (currentURL !== url || currentVersion !== version) {
-    const urlParts = url.split("/");
-    const index = urlParts.indexOf("models");
-    const id = urlParts[index + 1];
+    if (currentURL !== url || currentVersion !== version) {
+      const urlParts = url.split("/");
+      const index = urlParts.indexOf("models");
+      const id = urlParts[index + 1];
 
-    currentURL = url;
-    currentVersion = version;
-    currentModel = id;
+      currentURL = url;
+      currentVersion = version;
+      currentModel = id;
 
-    chrome.runtime.sendMessage<IAction>({
-      name: "checkHistory",
-      data: {
-        modelId: id,
-        versionId: version,
-      }
-    }).then((data) => {
-      if (data === true) {
-        alreadyDownloaded = true;
-      } else {
-        alreadyDownloaded = false;
-      }
+      chrome.runtime.sendMessage<IAction>({
+        name: "checkHistory",
+        data: {
+          modelId: id,
+          versionId: version,
+        }
+      }).then((data) => {
+        if (data === true) {
+          alreadyDownloaded = true;
+        } else {
+          alreadyDownloaded = false;
+        }
 
-      if (btn) {
-        btn.$set({ alreadyDownloaded });
-      }
-    })
+        if (btn) {
+          btn.$set({ alreadyDownloaded });
+        }
+      })
+    }
+  } catch (error) {
+    console.error("Civit downloader error:", error);
   }
 }
 async function createButton() {
