@@ -66,11 +66,13 @@ export const getSettingsStore = () => {
       let delay = 0;
       const metaPr = state.downloadHistory.filter(v => !state.downloadHistoryMeta[`${v}`]).map((v) => {
         delay += 200;
-        return new Promise<IModelVersion>((res) => {
+        return new Promise<IModelVersion>((res, rej) => {
           setTimeout(() => {
             fetch(`${modelVersionApi}/${v}`).then(res => res.json()).then(data => {
               res(data);
-            });
+            }).catch((e) => {
+              rej(e);
+            })
           }, delay);
         });
       });

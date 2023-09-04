@@ -4,7 +4,7 @@
   export let settingsStore: TWritableStore;
 
   function getLink(versionId: string, meta: any) {
-    return `https://civitai.com/models/${meta.modelId}?modelVersionId=${versionId}`;
+    return `https://civitai.com/models/${meta?.modelId}?modelVersionId=${versionId}`;
   }
 
   function handleDelete(versionId: string) {
@@ -26,24 +26,18 @@
 <h1>Downloads</h1>
 
 {#each $settingsStore.state.downloadHistory as download}
+  {@const meta = $settingsStore.state?.downloadHistoryMeta[download]}
   <div class="item">
-    <div class="description">
-      <a
-        target="_blank"
-        href={getLink(
-          download,
-          $settingsStore.state.downloadHistoryMeta[download]
-        )}
-      >
-        <img
-          width="50"
-          height="50"
-          src={$settingsStore.state.downloadHistoryMeta[download].preview.url}
-          alt="preview"
-        />
-        <h3>{$settingsStore.state.downloadHistoryMeta[download].name}</h3>
-      </a>
-    </div>
+    {#if meta}
+      <div class="description">
+        <a target="_blank" href={getLink(download, meta)}>
+          <img width="50" height="50" src={meta?.preview?.url} alt="preview" />
+          <h3>{meta?.name}</h3>
+        </a>
+      </div>
+    {:else}
+      No data found. Model version id - {download}
+    {/if}
     <div style="cursor:pointer;">
       <TrashBinOutline
         width="20"
