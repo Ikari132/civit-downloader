@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import type { IDownloadActionData, IState } from "../types";
+import type { ICheckHistoryAction, IDownloadActionData, IState } from "../types";
 import type { IImageResponce } from "../types/image";
 
 export async function getOptions() {
@@ -190,5 +190,17 @@ export async function updateHistory(modelVersionId: number, state: IState) {
   if (downloadHistory.indexOf(modelVersionId) === -1) {
     downloadHistory.push(modelVersionId);
     await chrome.storage.local.set({ downloadHistory });
+  }
+}
+
+export async function checkHistory({ data }: ICheckHistoryAction, sendResponse: (value: any) => void) {
+  const settingsStore = getSettingsStore();
+  await settingsStore.getValue().loading;
+  const { state } = settingsStore.getValue();
+
+  if (state.downloadHistory?.find(v => `${v}` === `${data.versionId}`)) {
+    sendResponse(true);
+  } else {
+    sendResponse(false);
   }
 }

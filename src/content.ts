@@ -11,6 +11,7 @@ const imageApi = "https://civitai.com/api/v1/images";
 let currentURL = null;
 let currentVersion = null;
 let currentModel = null;
+let alreadyDownloaded = false;
 
 let btn: SvelteComponentTyped = null;
 const body = document.querySelector("body");
@@ -28,12 +29,23 @@ observer.observe(body, { childList: true, subtree: true });
 
 function checkURL() {
   const url = new URL(window.location.href).pathname;
-  const version = new URL(window.location.href).searchParams.get("modelVersionId");
+  let version = new URL(window.location.href).searchParams.get("modelVersionId");
+
+  if (!version) {
+    const linkEls: NodeListOf<HTMLAnchorElement> = document.querySelector("main").querySelectorAll("[data-button='true']");
+    const downloadLinkEl = Array.from(linkEls).find(link => link.href?.includes("/api/download/models/"));
+    const idFromButton = downloadLinkEl?.getAttribute("href").replace("/api/download/models/", "");
+
+    if (idFromButton) {
+      version = idFromButton;
+    }
+  }
 
   if (!url.includes("models")) {
     currentURL = null;
     currentVersion = null;
     currentModel = null;
+    alreadyDownloaded = false;
 
     return;
   }
@@ -46,6 +58,24 @@ function checkURL() {
     currentURL = url;
     currentVersion = version;
     currentModel = id;
+
+    chrome.runtime.sendMessage<IAction>({
+      name: "checkHistory",
+      data: {
+        modelId: id,
+        versionId: version,
+      }
+    }).then((data) => {
+      if (data === true) {
+        alreadyDownloaded = true;
+      } else {
+        alreadyDownloaded = false;
+      }
+
+      if (btn) {
+        btn.$set({ alreadyDownloaded });
+      }
+    })
   }
 }
 async function createButton() {
@@ -118,7 +148,8 @@ async function downloadData(id: string) {
       btn.$set({ state: "success" });
 
       setTimeout(() => {
-        btn.$set({ state: null });
+        alreadyDownloaded = true;
+        btn.$set({ state: null, alreadyDownloaded });
       }, 1000);
 
     }

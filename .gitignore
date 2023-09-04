@@ -8,6 +8,8 @@ static
 static_ff
 !static_ff/manifest.json
 
+screenshots
+
 dist
 release
 test/background.js

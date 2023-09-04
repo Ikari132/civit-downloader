@@ -1,4 +1,4 @@
-import { downloadImages, getSettingsStore, parseExt, updateHistory } from "./lib/helpers";
+import { checkHistory, downloadImages, getSettingsStore, parseExt, updateHistory } from "./lib/helpers";
 import type { IDownloadActionData, TAction } from "./types";
 
 declare const browser: typeof chrome;
@@ -74,7 +74,7 @@ async function getCurrentTab() {
   return tab;
 }
 
-chrome.runtime.onMessage.addListener((action: TAction) => {
+chrome.runtime.onMessage.addListener((action: TAction, sender, sendResponse) => {
   switch (action.name) {
     case "download":
       handleDownload(action.data).then(() => {
@@ -90,7 +90,12 @@ chrome.runtime.onMessage.addListener((action: TAction) => {
     case "showOptions":
       chrome.runtime.openOptionsPage();
       break;
+    case "checkHistory":
+      checkHistory(action, sendResponse);
+      break;
     default:
       break;
   }
+
+  return true;
 });

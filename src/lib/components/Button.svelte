@@ -1,9 +1,10 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from "svelte";
   import Icon from "./Icon.svelte";
-  import { CogOutline } from "flowbite-svelte-icons";
+  import { CogOutline, CheckCircleOutline } from "flowbite-svelte-icons";
 
   export let state: "loading" | "success" | "error" | null = null;
+  export let alreadyDownloaded = false;
 
   const dispatch = createEventDispatcher();
 
@@ -25,6 +26,11 @@
 </script>
 
 <div class="contanier" style="top:{top}px;right:{right}px;">
+  {#if alreadyDownloaded}
+    <div class="icon icon_success" title="Already downloaded">
+      <CheckCircleOutline width="20" height="20" />
+    </div>
+  {/if}
   <button class:loading class:success on:click>
     <Icon />
     <div class="loading" />
@@ -43,6 +49,17 @@
 
     display: flex;
     gap: 10px;
+  }
+  .icon {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    height: 36px;
+  }
+  .icon_success {
+    color: #22c55e;
   }
   button {
     position: relative;
