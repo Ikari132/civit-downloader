@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Civit model downloader",
   "description": "Extension for download models with full metadata from Civitai",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "browser_specific_settings": {
     "gecko": {
       "id": "civitdownloader@aksionau.com"
