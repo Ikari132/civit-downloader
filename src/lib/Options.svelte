@@ -66,7 +66,7 @@
       <div class="nav-footer">
         <a href="https://ko-fi.com/L3L4HYJ79" target="_blank">
           <button type="button" class="support-btn">
-            Support <span class="beat">❤️</span>
+            <span class="beat">❤️</span> Support
           </button>
         </a>
         <a
