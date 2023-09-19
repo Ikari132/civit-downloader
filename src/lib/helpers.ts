@@ -54,7 +54,9 @@ export const getSettingsStore = () => {
 
     ui: {
       folderNamesVisible: true,
-    }
+    },
+
+    whatsnewVersion: null
   };
 
   const storeState: TStore<IState> = {

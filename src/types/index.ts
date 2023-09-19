@@ -64,6 +64,8 @@ export interface IState {
 
   ui: {
     folderNamesVisible: boolean;
-  }
+  },
+
+  whatsnewVersion: string;
 }
 

@@ -18,3 +18,5 @@ export const modelTypes = {
   Workflows: "Workflows",
   Other: "Other"
 }
+
+export const currentVersion = "1.5.0";

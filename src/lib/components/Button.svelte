@@ -2,11 +2,15 @@
   import { createEventDispatcher, onMount } from "svelte";
   import Icon from "./Icon.svelte";
   import { CogOutline, CheckCircleOutline } from "flowbite-svelte-icons";
+  import { getSettingsStore } from "../helpers";
+  import { currentVersion } from "../constants";
 
   export let state: "loading" | "success" | "error" | null = null;
   export let alreadyDownloaded = false;
 
   const dispatch = createEventDispatcher();
+
+  const settingsStore = getSettingsStore();
 
   let top = 180;
   let right = 18;
@@ -38,11 +42,22 @@
   </button>
 
   <button on:click={() => dispatch("options")}>
+    {#if $settingsStore.state.whatsnewVersion !== currentVersion}
+      <div class="whats-new">New</div>
+    {/if}
     <CogOutline width="20" height="20" />
   </button>
 </div>
 
 <style>
+  .whats-new {
+    position: absolute;
+    top: -16px;
+    left: 4px;
+    background: linear-gradient(var(--angle), red, orange);
+    border-radius: 4px;
+    padding: 2px;
+  }
   .contanier {
     z-index: 999999;
     position: fixed;

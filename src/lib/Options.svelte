@@ -1,5 +1,6 @@
 <script lang="ts">
   import Icon from "./components/Icon.svelte";
+  import { currentVersion } from "./constants";
   import { getSettingsStore } from "./helpers";
   import Downloads from "./optionsViews/Downloads.svelte";
   import Settings from "./optionsViews/Settings.svelte";
@@ -13,6 +14,34 @@
   <!-- {#await $settingsStore.updating}
     Updating
   {/await} -->
+  {#if $settingsStore.state.whatsnewVersion !== currentVersion}
+    <div class="whats-new">
+      <h4>
+        What's new in version {currentVersion}
+      </h4>
+      <div style="flex:1;">
+        <ul>
+          <li>
+            <h3>Now you can save models to folders based on model type</h3>
+          </li>
+          <li>
+            <h3>
+              You can set custom names for model type folders on the settings
+              page
+            </h3>
+          </li>
+          <li>
+            <h3>Bugfixes</h3>
+          </li>
+        </ul>
+      </div>
+      <button
+        class="support-btn"
+        on:click={() => ($settingsStore.state.whatsnewVersion = currentVersion)}
+        >Got it</button
+      >
+    </div>
+  {/if}
 
   {#await $settingsStore.loading}
     <p>Loading...</p>
@@ -62,6 +91,19 @@
   :global(.disabled) {
     opacity: 0.5;
     pointer-events: none;
+  }
+  .whats-new {
+    position: fixed;
+    top: calc(50% - 150px);
+    left: calc(50% - 200px);
+    background: #fff;
+    width: 400px;
+    min-height: 300px;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
   }
   .logo {
     padding: 10px;
@@ -193,6 +235,11 @@
     }
     .support-btn.active {
       border: solid 1px #f2f2f2;
+    }
+
+    .whats-new {
+      background: #1e293b;
+      color: #fff;
     }
   }
 </style>
