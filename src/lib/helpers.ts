@@ -235,7 +235,7 @@ export async function fetchAllImages(url: string, modelVersionId: number) {
   }
 }
 
-export async function updateHistory(modelVersion: IModelVersion, state: IState) {
+export async function updateHistory({ modelData, modelVersion }: IDownloadActionData, state: IState) {
   if (!state.saveModel) {
     return;
   }
@@ -247,7 +247,7 @@ export async function updateHistory(modelVersion: IModelVersion, state: IState) 
     downloadHistory.push(modelVersionId);
     downloadHistoryMeta[modelVersionId] = {
       name: modelVersion.name,
-      modelName: (modelVersion as any)?.model?.name,
+      modelName: modelData?.name,
       modelId: modelVersion.modelId,
       preview: modelVersion.images[0],
       date: new Date().valueOf(),

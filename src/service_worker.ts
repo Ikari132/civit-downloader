@@ -56,7 +56,7 @@ async function handleDownload(data: IDownloadActionData) {
   }
 
   return Promise.all(downloads).then(() => {
-    updateHistory(data.modelVersion, state);
+    updateHistory(data, state);
   })
 }
 
