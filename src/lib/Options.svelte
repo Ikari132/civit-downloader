@@ -4,6 +4,7 @@
   import { getSettingsStore } from "./helpers";
   import Downloads from "./optionsViews/Downloads.svelte";
   import Settings from "./optionsViews/Settings.svelte";
+  import { LinkOutline } from "flowbite-svelte-icons";
 
   const settingsStore = getSettingsStore();
 
@@ -66,6 +67,19 @@
         <a href="https://ko-fi.com/L3L4HYJ79" target="_blank">
           <button type="button" class="support-btn">
             Support <span class="beat">❤️</span>
+          </button>
+        </a>
+        <a
+          href="https://ayamaru.com/more"
+          target="_blank"
+          style="text-decoration: none;"
+        >
+          <button
+            type="button"
+            class="support-btn"
+            style="display: flex;align-items: center;justify-content: center;"
+            ><LinkOutline width="14" height="14" />
+            <span style="padding-left: 5px;">More apps</span>
           </button>
         </a>
       </div>
@@ -141,6 +155,8 @@
   }
   .nav-footer {
     display: flex;
+    flex-direction: column;
+    gap: 10px;
     padding: 10px;
     padding-bottom: 0;
   }
