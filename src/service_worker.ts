@@ -67,16 +67,14 @@ async function getCurrentTab() {
 }
 
 chrome.runtime.onMessage.addListener((action: TAction, sender, sendResponse) => {
+  const tabId = sender?.tab?.id;
+
   switch (action.name) {
     case "download":
       handleDownload(action.data).then(() => {
-        getCurrentTab().then((tab) => {
-          chrome.tabs.sendMessage(tab?.id, { name: "download-ready" })
-        })
+        chrome.tabs.sendMessage(tabId, { name: "download-ready" })
       }).catch((err) => {
-        getCurrentTab().then((tab) => {
-          chrome.tabs.sendMessage(tab?.id, { name: "download-error", err })
-        })
+        chrome.tabs.sendMessage(tabId, { name: "download-error", err })
       })
       break;
     case "showOptions":
