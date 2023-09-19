@@ -5,7 +5,7 @@
   "author": "Anton Aksionau <ikari808@gmail.com>",
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
-    "build": "pnpm build:chrome",
+    "build": "pnpm build:chrome&&pnpm build:firefox",
     "build:chrome": "rollup -c && pnpm lint && web-ext build -s ./static --overwrite-dest --artifacts-dir=dist/chrome",
     "build:firefox": "rollup --config rollup.config.firefox.mjs && pnpm lint && web-ext build -s ./static_ff --overwrite-dest --artifacts-dir=dist/firefox",
     "watch": "rollup -c -w",

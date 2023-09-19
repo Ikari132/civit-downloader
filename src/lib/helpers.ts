@@ -1,8 +1,8 @@
 import { writable, type Writable } from "svelte/store";
 import type { ICheckHistoryAction, IDownloadActionData, IState } from "../types";
 import type { IImageResponce } from "../types/image";
-import type { IModelVersion } from "../types/model";
-import { modelVersionApi } from "./constants";
+import type { IModel, IModelVersion } from "../types/model";
+import { modelTypes, modelVersionApi } from "./constants";
 
 export async function getOptions() {
   return new Promise<{ saveAll: boolean, saveModel: boolean }>((resolve) => {
@@ -49,6 +49,8 @@ export const getSettingsStore = () => {
 
     downloadHistory: [],
     downloadHistoryMeta: {},
+    modelTypes,
+    groupByFolder: false,
   };
 
   const storeState: TStore<IState> = {
@@ -145,10 +147,25 @@ export function parseExt(ext: string) {
   }
   return ext;
 }
+export function getDownloadFolder(modelData: IModel, state: IState) {
+  let folderName = "";
 
+  if (state.groupByFolder) {
+    const modelTypeName = state.modelTypes[modelData.type];
+
+    if (modelTypeName) {
+      folderName = `${modelTypeName}/`;
+    }
+  }
+  return folderName;
+
+}
 export function downloadImages(data: IDownloadActionData, state: IState) {
   const modelName = data.name;
   let images = data.images;
+
+  const folderName = getDownloadFolder(data.modelData, state);
+
 
   if (state.imageFrom === "creator") {
     images = data.creatorImages;
@@ -179,7 +196,7 @@ export function downloadImages(data: IDownloadActionData, state: IState) {
 
     return chrome.downloads.download({
       url: finalImageUrl,
-      filename: `${modelName}/${finalImageName}`
+      filename: `${folderName}${modelName}/${finalImageName}`
     })
   })
 }

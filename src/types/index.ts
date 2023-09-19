@@ -1,4 +1,5 @@
 import type { IModel, IModelVersion } from "./model";
+import type { modelTypes } from "./../lib/constants";
 
 export interface IAction {
   name: string;
@@ -58,5 +59,7 @@ export interface IState {
 
   downloadHistory: string[];
   downloadHistoryMeta: Record<string, any>;
+  modelTypes: typeof modelTypes;
+  groupByFolder: boolean;
 }
 

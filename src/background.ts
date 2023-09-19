@@ -1,4 +1,4 @@
-import { checkHistory, downloadImages, getSettingsStore, parseExt, updateHistory } from "./lib/helpers";
+import { checkHistory, downloadImages, getDownloadFolder, getSettingsStore, parseExt, updateHistory } from "./lib/helpers";
 import type { IDownloadActionData, TAction } from "./types";
 
 declare const browser: typeof chrome;
@@ -12,12 +12,14 @@ async function handleDownload(data: IDownloadActionData) {
 
   const downloads = [];
 
+  const folderName = getDownloadFolder(data.modelData, state);
+
   if (state.saveFullData) {
     const blob = new Blob([JSON.stringify(data.modelData)], { type: "text/info" });
     const blobURL = URL.createObjectURL(blob);
 
     const ext = parseExt(state.fullDataExt);
-    const name = `${data.name}/${data.name}.${ext}`;
+    const name = `${folderName}${data.name}/${data.name}.${ext}`;
 
     const fullDataPr = browser.downloads.download({
       url: blobURL,
@@ -32,7 +34,7 @@ async function handleDownload(data: IDownloadActionData) {
     const versionBlobURL = URL.createObjectURL(versionBlob);
 
     const ext = parseExt(state.versionDataExt);
-    const name = `${data.name}/${data.name}.${ext}`;
+    const name = `${folderName}${data.name}/${data.name}.${ext}`;
     const versionPr = browser.downloads.download({
       url: versionBlobURL,
       filename: name,
@@ -44,7 +46,7 @@ async function handleDownload(data: IDownloadActionData) {
   if (state.saveModel) {
     const modelPr = chrome.downloads.download({
       url: data.modelURL,
-      filename: `${data.name}/${data.fileName}`,
+      filename: `${folderName}${data.name}/${data.fileName}`,
 
     })
     downloads.push(modelPr);
@@ -58,7 +60,7 @@ async function handleDownload(data: IDownloadActionData) {
 
     const previewPr = chrome.downloads.download({
       url: data.images[0],
-      filename: `${data.name}/${data.name}.preview.png`
+      filename: `${folderName}${data.name}/${data.name}.preview.png`
     })
     downloads.push(previewPr);
   }

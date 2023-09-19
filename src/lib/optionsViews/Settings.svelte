@@ -15,6 +15,31 @@
     bind:checked={$settingsStore.state.saveModel}
   />
 </label>
+<label>
+  <div class="description">
+    <h3>Group by folder</h3>
+  </div>
+  <input
+    type="checkbox"
+    name="group-folder"
+    id="group-folder"
+    bind:checked={$settingsStore.state.groupByFolder}
+  />
+</label>
+{#if $settingsStore.state.groupByFolder}
+  <h4>Folder names</h4>
+  {#each Object.keys($settingsStore.state.modelTypes) as modelTypeKey}
+    <label>
+      <div class="description">
+        <h3>{modelTypeKey}</h3>
+      </div>
+      <input
+        type="text"
+        bind:value={$settingsStore.state.modelTypes[modelTypeKey]}
+      />
+    </label>
+  {/each}
+{/if}
 
 <h4>Images</h4>
 <label>
