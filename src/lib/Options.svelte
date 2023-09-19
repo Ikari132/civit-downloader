@@ -70,7 +70,7 @@
           </button>
         </a>
         <a
-          href="https://ayamaru.com/more"
+          href="https://www.ayamaru.com/more"
           target="_blank"
           style="text-decoration: none;"
         >
