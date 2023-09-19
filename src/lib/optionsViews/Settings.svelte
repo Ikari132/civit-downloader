@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { TWritableStore } from "../helpers";
+  import { ChevronDownSolid, ChevronUpSolid } from "flowbite-svelte-icons";
 
   export let settingsStore: TWritableStore;
 </script>
@@ -27,18 +28,35 @@
   />
 </label>
 {#if $settingsStore.state.groupByFolder}
-  <h4>Folder names</h4>
-  {#each Object.keys($settingsStore.state.modelTypes) as modelTypeKey}
-    <label>
-      <div class="description">
-        <h3>{modelTypeKey}</h3>
-      </div>
+  <h4>
+    <label class="label_collapsible">
+      {#if $settingsStore.state.ui.folderNamesVisible}
+        <ChevronUpSolid width="16" height="16" />
+      {:else}
+        <ChevronDownSolid width="16" height="16" />
+      {/if}
       <input
-        type="text"
-        bind:value={$settingsStore.state.modelTypes[modelTypeKey]}
+        type="checkbox"
+        hidden
+        bind:checked={$settingsStore.state.ui.folderNamesVisible}
       />
+      <span style="padding:0 5px;"> Folder names</span>
     </label>
-  {/each}
+  </h4>
+
+  {#if $settingsStore.state.ui.folderNamesVisible}
+    {#each Object.keys($settingsStore.state.modelTypes) as modelTypeKey}
+      <label class="label_level_2">
+        <div class="description">
+          <h3>{modelTypeKey}</h3>
+        </div>
+        <input
+          type="text"
+          bind:value={$settingsStore.state.modelTypes[modelTypeKey]}
+        />
+      </label>
+    {/each}
+  {/if}
 {/if}
 
 <h4>Images</h4>
@@ -157,7 +175,6 @@
     font-size: 14px;
   }
   h4 {
-    font-size: 0.8rem;
     font-size: 14px;
     margin: 0;
     padding: 20px 10px;
@@ -165,6 +182,7 @@
     align-items: center;
     color: #64748b;
   }
+
   label {
     display: flex;
     align-items: center;
@@ -179,6 +197,14 @@
 
     border-radius: 10px;
   }
+  .label_collapsible {
+    font-size: 14px;
+    color: #64748b;
+  }
+  .label_level_2 {
+    margin-left: 20px;
+  }
+
   label:first-child {
     margin-top: 0;
   }
@@ -230,6 +256,9 @@
     }
 
     h4 {
+      color: #e2e8f0;
+    }
+    .label_collapsible {
       color: #e2e8f0;
     }
   }

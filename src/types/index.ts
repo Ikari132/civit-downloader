@@ -61,5 +61,9 @@ export interface IState {
   downloadHistoryMeta: Record<string, any>;
   modelTypes: typeof modelTypes;
   groupByFolder: boolean;
+
+  ui: {
+    folderNamesVisible: boolean;
+  }
 }
 

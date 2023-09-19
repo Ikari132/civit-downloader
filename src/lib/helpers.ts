@@ -51,6 +51,10 @@ export const getSettingsStore = () => {
     downloadHistoryMeta: {},
     modelTypes,
     groupByFolder: false,
+
+    ui: {
+      folderNamesVisible: true,
+    }
   };
 
   const storeState: TStore<IState> = {
