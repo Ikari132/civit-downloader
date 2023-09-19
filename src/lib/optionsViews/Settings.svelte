@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { TWritableStore } from "../helpers";
-  import { ChevronDownSolid, ChevronUpSolid } from "flowbite-svelte-icons";
+  import { ChevronDownSolid, ChevronRightSolid } from "flowbite-svelte-icons";
 
   export let settingsStore: TWritableStore;
 </script>
@@ -31,9 +31,9 @@
   <h4>
     <label class="label_collapsible">
       {#if $settingsStore.state.ui.folderNamesVisible}
-        <ChevronUpSolid width="16" height="16" />
+        <ChevronDownSolid width="14" height="14" />
       {:else}
-        <ChevronDownSolid width="16" height="16" />
+        <ChevronRightSolid width="14" height="14" />
       {/if}
       <input
         type="checkbox"
