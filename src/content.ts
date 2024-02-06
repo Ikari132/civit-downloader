@@ -10,12 +10,14 @@ let currentURL = null;
 let currentVersion = null;
 let currentModel = null;
 let alreadyDownloaded = false;
+let settings = null;
 
 let btn: SvelteComponentTyped = null;
 const body = document.querySelector("body");
 
 const observer = new MutationObserver(() => {
   checkURL();
+  loadSettings();
   if (currentURL?.includes("models") && currentModel) {
     createButton();
   } else {
@@ -97,6 +99,14 @@ async function createButton() {
   });
 
   btn = button;
+}
+
+async function loadSettings() {
+  chrome.runtime.sendMessage<IAction>({
+    name: "getSettings"
+  }).then((data) => {
+    settings = data;
+  })
 }
 
 function getFilenameParts(filename: string) {

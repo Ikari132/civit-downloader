@@ -6,7 +6,7 @@ export interface IAction {
   data?: Record<string, any>;
 }
 
-export type TAction = IDownloadAction | IShowOptionsAction | ICheckHistoryAction;
+export type TAction = IDownloadAction | IShowOptionsAction | ICheckHistoryAction | IGetSettingsAction;
 
 export interface IDownloadAction {
   name: "download";
@@ -21,6 +21,9 @@ export interface ICheckHistoryAction {
     modelId: string;
     versionId: string;
   }
+}
+export interface IGetSettingsAction {
+  name: "getSettings";
 }
 export interface IDownloadActionData {
   modelData: IModel;
