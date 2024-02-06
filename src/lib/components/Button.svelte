@@ -42,9 +42,11 @@
   </button>
 
   <button on:click={() => dispatch("options")}>
-    {#if $settingsStore.state.whatsnewVersion !== currentVersion}
-      <div class="whats-new">New</div>
-    {/if}
+    {#await $settingsStore.loading then _}
+      {#if $settingsStore.state.whatsnewVersion !== currentVersion}
+        <div class="whats-new">New</div>
+      {/if}
+    {/await}
     <CogOutline width="20" height="20" />
   </button>
 </div>
