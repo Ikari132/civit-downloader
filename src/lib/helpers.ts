@@ -231,7 +231,9 @@ export async function fetchAllImages(url: string, modelVersionId: number) {
     return allImages;
   } catch (error) {
     console.error('Error fetching images:', error);
-    throw error;
+    // TODO: handle correct
+    // return null;
+    return [];
   }
 }
 
@@ -273,4 +275,12 @@ export async function getCurrentTab() {
   // `tab` will either be a `tabs.Tab` instance or `undefined`.
   const [tab] = await chrome.tabs.query(queryOptions);
   return tab;
+}
+
+export async function getSettings(sendResponse: (value: any) => void
+) {
+  const settingsStore = getSettingsStore();
+  const { state } = settingsStore.getValue();
+
+  sendResponse(state);
 }

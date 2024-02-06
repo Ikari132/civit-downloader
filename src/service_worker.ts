@@ -1,4 +1,4 @@
-import { checkHistory, downloadImages, getDownloadFolder, getSettingsStore, parseExt, updateHistory } from "./lib/helpers";
+import { checkHistory, downloadImages, getDownloadFolder, getSettings, getSettingsStore, parseExt, updateHistory } from "./lib/helpers";
 import type { IDownloadActionData, TAction } from "./types";
 
 async function handleDownload(data: IDownloadActionData) {
@@ -76,6 +76,9 @@ chrome.runtime.onMessage.addListener((action: TAction, sender, sendResponse) => 
       break;
     case "checkHistory":
       checkHistory(action, sendResponse);
+      break;
+    case "getSettings":
+      getSettings(sendResponse);
       break;
     default:
       break;
