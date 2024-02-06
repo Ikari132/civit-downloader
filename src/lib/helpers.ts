@@ -231,9 +231,7 @@ export async function fetchAllImages(url: string, modelVersionId: number) {
     return allImages;
   } catch (error) {
     console.error('Error fetching images:', error);
-    // TODO: handle correct
-    // return null;
-    return [];
+    return null;
   }
 }
 
@@ -280,6 +278,7 @@ export async function getCurrentTab() {
 export async function getSettings(sendResponse: (value: any) => void
 ) {
   const settingsStore = getSettingsStore();
+  await settingsStore.getValue().loading;
   const { state } = settingsStore.getValue();
 
   sendResponse(state);
