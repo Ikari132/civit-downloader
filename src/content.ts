@@ -1,4 +1,4 @@
-import type { IAction } from "./types";
+import type { IAction, IDownloadActionData, IState } from "./types";
 import Button from "./lib/components/Button.svelte";
 import type { SvelteComponentTyped } from "svelte";
 import type { IModel } from "./types/model";
@@ -10,14 +10,15 @@ let currentURL = null;
 let currentVersion = null;
 let currentModel = null;
 let alreadyDownloaded = false;
-let settings = null;
+let settings: IState = null;
 
 let btn: SvelteComponentTyped = null;
 const body = document.querySelector("body");
 
+loadSettings();
+
 const observer = new MutationObserver(() => {
   checkURL();
-  loadSettings();
   if (currentURL?.includes("models") && currentModel) {
     createButton();
   } else {
@@ -102,11 +103,16 @@ async function createButton() {
 }
 
 async function loadSettings() {
-  chrome.runtime.sendMessage<IAction>({
-    name: "getSettings"
-  }).then((data) => {
-    settings = data;
-  })
+  return new Promise<void>((res) => {
+    return chrome.runtime
+      .sendMessage<IAction>({
+        name: "getSettings",
+      })
+      .then((data) => {
+        settings = data;
+        res();
+      });
+  });
 }
 
 function getFilenameParts(filename: string) {
@@ -120,6 +126,7 @@ function getFilenameParts(filename: string) {
   return { name, ext };
 }
 async function downloadData(id: string) {
+  await loadSettings();
   const modelData: IModel = await (await fetch(`${modelApi}/${id}`)).json();
 
   const modelVersion = currentVersion ? modelData.modelVersions.find(v => `${v.id}` === currentVersion) : modelData.modelVersions[0];
@@ -132,27 +139,42 @@ async function downloadData(id: string) {
 
   const fileName = modelVersion.files[0].name;
   const modelURL = modelVersion.downloadUrl;
-
-  const allImages: IImage[] = await fetchAllImages(imageApi, modelVersion.id);
-
+  
   const modelAuthor = modelData.creator.username;
-  const imagesByAuthor = allImages.reduce((acc, i) => {
-    if (i.username === modelAuthor) {
-      acc.creator.push(i);
-    } else {
-      acc.others.push(i);
-    }
-    return acc;
-  }, { creator: [], others: [] });
-
-
   const images = modelVersion.images?.map(i => i.url);
 
-  const creatorImages = imagesByAuthor.creator.map(i => i.url);
-  const galleryImages = imagesByAuthor.others.map(i => i.url);
-
-
   const { name } = getFilenameParts(fileName);
+
+  const data: IDownloadActionData = {  
+    modelData,
+    modelVersion,
+    blobURL,
+    versionBlobURL,
+    modelURL,
+    name,
+    fileName,
+    images,
+    creatorImages: [],
+    galleryImages: []
+  };
+
+  if (settings.imageFrom !== "model") {
+    const allImages: IImage[] = await fetchAllImages(imageApi, modelVersion.id);
+
+    if (allImages) {
+      const imagesByAuthor = allImages.reduce((acc, i) => {
+        if (i.username === modelAuthor) {
+          acc.creator.push(i);
+        } else {
+          acc.others.push(i);
+        }
+        return acc;
+      }, { creator: [], others: [] });
+  
+      data.creatorImages = imagesByAuthor.creator.map(i => i.url);
+      data.galleryImages = imagesByAuthor.others.map(i => i.url);
+    }
+  }
 
   btn.$set({ state: "loading" });
 
@@ -171,19 +193,9 @@ async function downloadData(id: string) {
       console.error(request);
     }
   })
+  
   chrome.runtime.sendMessage<IAction>({
     name: "download",
-    data: {
-      modelData,
-      modelVersion,
-      blobURL,
-      versionBlobURL,
-      modelURL,
-      name,
-      fileName,
-      images,
-      creatorImages,
-      galleryImages,
-    }
+    data: data
   });
 }
