@@ -139,6 +139,15 @@ export const getSettingsStore = () => {
       });
 
     w.set(state);
+
+    chrome.tabs.query({}, (tabs) =>
+      tabs.forEach((tab) =>
+        chrome.tabs.sendMessage(tab.id, {
+          name: "onSettingsUpdated",
+          data: state.state,
+        })
+      )
+    );
   };
 
   const getValue = () => {

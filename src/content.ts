@@ -115,6 +115,19 @@ async function loadSettings() {
   });
 }
 
+chrome.runtime.onMessage.addListener((action) => {
+  switch (action.name) {
+    case "onSettingsUpdated":
+      settings = action.data     
+      break;
+
+    default:
+      break;
+  }
+  return true;
+});
+
+
 function getFilenameParts(filename: string) {
   const lastDotIndex = filename.lastIndexOf('.');
   if (lastDotIndex === -1) {
