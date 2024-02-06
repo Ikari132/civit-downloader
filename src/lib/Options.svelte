@@ -23,16 +23,12 @@
       <div style="flex:1;">
         <ul>
           <li>
-            <h3>Now you can save models to folders based on model type</h3>
+            <h3>Temporary fix: until <a href="https://github.com/civitai/civitai/issues/1005">Civitai API is fixed</a>, the extension will skip gallery images. Settings &rarr; Images from &rarr; Model card is currently unaffected by API bug, so you can use it instead </h3>
           </li>
           <li>
             <h3>
-              You can set custom names for model type folders on the settings
-              page
+              Fix the flickering badge on the settings button
             </h3>
-          </li>
-          <li>
-            <h3>Bugfixes</h3>
           </li>
         </ul>
       </div>
@@ -99,6 +95,9 @@
     background: #fff;
     color: #000;
   }
+  a{
+      color: #000;
+    }
   :global(*) {
     box-sizing: border-box;
   }
@@ -229,6 +228,9 @@
   @media (prefers-color-scheme: dark) {
     :global(html) {
       background: #1e293b;
+      color: #fff;
+    }
+    a{
       color: #fff;
     }
     main {
