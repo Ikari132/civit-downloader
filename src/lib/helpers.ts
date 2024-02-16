@@ -20,6 +20,22 @@ export async function getOptions() {
   });
 }
 
+export const messageStore = writable<{
+  status: "success" | "warning" | "error" | null;
+  message?: string;
+}>({ status: null });
+
+messageStore.subscribe((data) => {
+  if (data.status) {
+    setTimeout(() => {
+      messageStore.set({ status: null });
+    }, 3000);
+  }
+  if (data.status === "error" || data.status === "warning") {
+    console.error(data.message);
+  }
+});
+
 export type TStore<T> = {
   state: T;
   loading: Promise<T>;
@@ -217,7 +233,12 @@ export async function fetchAllImages(url: string, modelVersionId: number) {
 
   try {
     while (!ready) {
-      const modelImages: IImageResponce = await (await fetch(totalUrl)).json();
+      const modelReq: Response = await fetch(totalUrl);
+      
+      if (!modelReq.ok) {
+        throw Error("Failed to fetch all images");
+      }
+      const modelImages: IImageResponce = await modelReq.json();
       const images = modelImages.items;
 
       allImages.push(...images);
@@ -230,7 +251,7 @@ export async function fetchAllImages(url: string, modelVersionId: number) {
 
     return allImages;
   } catch (error) {
-    console.error('Error fetching images:', error);
+    messageStore.set({ status: "warning", message: "Error fetching images" });
     return null;
   }
 }
