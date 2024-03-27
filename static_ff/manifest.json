@@ -35,5 +35,5 @@
       "css": ["build/content.css"]
     }
   ],
-  "permissions": ["storage", "activeTab", "scripting", "downloads"]
+  "permissions": ["storage", "downloads"]
 }
