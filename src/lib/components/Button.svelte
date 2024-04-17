@@ -2,7 +2,7 @@
   import { createEventDispatcher, onMount } from "svelte";
   import Icon from "./Icon.svelte";
   import { CogOutline, CheckCircleOutline } from "flowbite-svelte-icons";
-  import { getSettingsStore } from "../helpers";
+  import { getSettingsStore, messageStore } from "../helpers";
   import { currentVersion } from "../constants";
 
   export let state: "loading" | "success" | "error" | null = null;
@@ -27,15 +27,34 @@
 
   $: loading = state === "loading";
   $: success = state === "success";
+  $: error = state === "error";
+
+  let popupError = null;
+
+  messageStore.subscribe((data) => {
+    switch (data.status) {
+      case "warning":
+      case "error":
+        popupError = data.message;
+        break;
+
+      default:
+        popupError = null;
+        break;
+    }
+  });
 </script>
 
+{#if popupError}
+  <div class="error-popup">{popupError}</div>
+{/if}
 <div class="contanier" style="top:{top}px;right:{right}px;">
   {#if alreadyDownloaded}
     <div class="icon icon_success" title="Already downloaded">
       <CheckCircleOutline width="20" height="20" />
     </div>
   {/if}
-  <button class:loading class:success on:click>
+  <button class:loading class:success class:error on:click>
     <Icon />
     <div class="loading" />
     Download
@@ -136,9 +155,27 @@
     --size: -0.3rem;
     background: linear-gradient(var(--angle), #22c55e, #10b981);
   }
+
+  .error:before {
+    --size: -0.3rem;
+    background: #ae0000;
+  }
+
   button:hover {
     cursor: pointer;
     background: #0f172a;
+  }
+
+  .error-popup {
+    position: fixed;
+    background: white;
+    border-radius: 6px;
+    top: 6px;
+    left: 50%;
+    z-index: 99999;
+    padding: 6px 12px;
+    color: #ae0000;
+    transform: translate(-50%, 0);
   }
 
   @keyframes flow-gradient {

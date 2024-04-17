@@ -9,13 +9,27 @@
   const settingsStore = getSettingsStore();
 
   let view = "general";
+  let showWhatsNew = false;
+
+  $settingsStore.loading.then(
+    () =>
+      (showWhatsNew = $settingsStore.state.whatsnewVersion !== currentVersion),
+  );
+
+  function handleCloseWhatsNew() {
+    if ($settingsStore.state.whatsnewVersion !== currentVersion) {
+      $settingsStore.state.whatsnewVersion = currentVersion;
+    }
+
+    showWhatsNew = false;
+  }
 </script>
 
 <main>
   <!-- {#await $settingsStore.updating}
     Updating
   {/await} -->
-  {#if $settingsStore.state.whatsnewVersion !== currentVersion}
+  {#if showWhatsNew}
     <div class="whats-new">
       <h4>
         What's new in version {currentVersion}
@@ -23,20 +37,21 @@
       <div style="flex:1;">
         <ul>
           <li>
-            <h3>Temporary fix: until <a href="https://github.com/civitai/civitai/issues/1005">Civitai API is fixed</a>, the extension will skip gallery images. Settings &rarr; Images from &rarr; Model card is currently unaffected by API bug, so you can use it instead </h3>
+            <h3>
+              Temporary fix: until <a
+                href="https://github.com/civitai/civitai/issues/1005"
+                >Civitai API is fixed</a
+              >, the extension will skip gallery images. Settings &rarr; Images
+              from &rarr; Model card is currently unaffected by API bug, so you
+              can use it instead
+            </h3>
           </li>
           <li>
-            <h3>
-              Fix the flickering badge on the settings button
-            </h3>
+            <h3>Fix the flickering badge on the settings button</h3>
           </li>
         </ul>
       </div>
-      <button
-        class="support-btn"
-        on:click={() => ($settingsStore.state.whatsnewVersion = currentVersion)}
-        >Got it</button
-      >
+      <button class="support-btn" on:click={handleCloseWhatsNew}>Got it</button>
     </div>
   {/if}
 
@@ -45,7 +60,9 @@
   {:then _}
     <nav>
       <div class="nav-main">
-        <h4 class="logo"><Icon /> Civit Downloader</h4>
+        <h4 class="logo">
+          <Icon /> Civit Downloader
+        </h4>
       </div>
       <div class="menu">
         <button
@@ -60,6 +77,9 @@
         >
       </div>
       <div class="nav-footer">
+        <button class="support-btn" on:click={() => (showWhatsNew = true)}>
+          What's new
+        </button>
         <a href="https://ko-fi.com/L3L4HYJ79" target="_blank">
           <button type="button" class="support-btn">
             <span class="beat">❤️</span> Support
@@ -95,9 +115,9 @@
     background: #fff;
     color: #000;
   }
-  a{
-      color: #000;
-    }
+  a {
+    color: #000;
+  }
   :global(*) {
     box-sizing: border-box;
   }
@@ -230,7 +250,7 @@
       background: #1e293b;
       color: #fff;
     }
-    a{
+    a {
       color: #fff;
     }
     main {
