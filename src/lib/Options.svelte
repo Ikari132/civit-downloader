@@ -1,12 +1,13 @@
 <script lang="ts">
   import Icon from "./components/Icon.svelte";
-  import { currentVersion } from "./constants";
+  import { currentVersion, CHANGELOG } from "./constants";
   import { getSettingsStore } from "./helpers";
   import Downloads from "./optionsViews/Downloads.svelte";
   import Settings from "./optionsViews/Settings.svelte";
   import { LinkOutline } from "flowbite-svelte-icons";
 
   const settingsStore = getSettingsStore();
+  const versionChanges = CHANGELOG[currentVersion] || [];
 
   let view = "general";
   let showWhatsNew = false;
@@ -36,11 +37,13 @@
       </h4>
       <div style="flex:1;">
         <ul>
-          <li>
-            <h3>
-             Added errors notification
-            </h3>
-          </li>
+          {#each versionChanges as change}
+            <li>
+              <h3>
+                {change.text}
+              </h3>
+            </li>
+          {/each}
         </ul>
       </div>
       <button class="support-btn" on:click={handleCloseWhatsNew}>Got it</button>

@@ -20,3 +20,11 @@ export const modelTypes = {
 }
 
 export const currentVersion = "1.5.3";
+
+export const CHANGELOG = {
+  "1.5.3":[
+    {
+      text:"Added errors notification"
+    }
+  ]
+}
