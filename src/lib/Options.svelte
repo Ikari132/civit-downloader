@@ -38,16 +38,8 @@
         <ul>
           <li>
             <h3>
-              Temporary fix: until <a
-                href="https://github.com/civitai/civitai/issues/1005"
-                >Civitai API is fixed</a
-              >, the extension will skip gallery images. Settings &rarr; Images
-              from &rarr; Model card is currently unaffected by API bug, so you
-              can use it instead
+             Added errors notification
             </h3>
-          </li>
-          <li>
-            <h3>Fix the flickering badge on the settings button</h3>
           </li>
         </ul>
       </div>
