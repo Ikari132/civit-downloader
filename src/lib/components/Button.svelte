@@ -46,7 +46,12 @@
 </script>
 
 {#if popupError}
-  <div class="error-popup">{popupError}</div>
+  <div class="error-popup">
+    <h5 class="error-title">Civit downloader</h5>
+    <div class="error-text">
+      {popupError}
+    </div>
+  </div>
 {/if}
 <div class="contanier" style="top:{top}px;right:{right}px;">
   {#if alreadyDownloaded}
@@ -168,14 +173,31 @@
 
   .error-popup {
     position: fixed;
-    background: white;
+    background: #1e293b;
     border-radius: 6px;
     top: 6px;
     left: 50%;
     z-index: 99999;
-    padding: 6px 12px;
-    color: #ae0000;
+    padding: 12px 12px;
+    color: #ef4444;
     transform: translate(-50%, 0);
+  }
+  .error-text:before{
+    content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background-color: #ef4444;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+  .error-popup .error-title{
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    opacity: 0.9;
+
+    color: #fff;
   }
 
   @keyframes flow-gradient {

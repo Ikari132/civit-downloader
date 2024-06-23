@@ -134,7 +134,7 @@ async function downloadData(id: string) {
     const modelReq: Response = await fetch(`${modelApi}/${id}`);
 
     if (!modelReq.ok) {
-      messageStore.set({ status: "error", message:"Failed to fetch model data" });
+      messageStore.set({ status: "error", message: "Failed to fetch model data" });
       return;
     }
 
@@ -207,7 +207,7 @@ async function downloadData(id: string) {
         }, 1000);
       }
       if (request.name === "download-error") {
-        messageStore.set({ status: "error", message: "Download error" });
+        messageStore.set({ status: "error", message: "Failed to download" });
       }
     });
 
@@ -216,7 +216,7 @@ async function downloadData(id: string) {
       data: data,
     });
   } catch (err) {
-    messageStore.set({ status: "error", message: "Error" });
+    messageStore.set({ status: "error", message: "Failed to download" });
   }
 }
 
