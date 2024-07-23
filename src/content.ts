@@ -152,7 +152,13 @@ async function downloadData(id: string) {
     });
     const versionBlobURL = URL.createObjectURL(versionBlob);
 
-    const fileName = modelVersion.files[0].name;
+    let modelFileData = modelVersion.files.find((f) => f.type === "Model");
+
+    if(!modelFileData) {
+      modelFileData = modelVersion.files[0];
+    }
+
+    const fileName = modelFileData.name;
     const modelURL = modelVersion.downloadUrl;
 
     const modelAuthor = modelData.creator.username;
