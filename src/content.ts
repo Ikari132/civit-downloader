@@ -15,7 +15,7 @@ let settings: IState = null;
 let btn: SvelteComponentTyped = null;
 const body = document.querySelector("body");
 
-loadSettings();
+loadSettings(null);
 
 const observer = new MutationObserver(() => {
   checkURL();
@@ -92,9 +92,12 @@ async function createButton() {
     target: document.body,
   });
 
-  button.$on("click", () => {
-    downloadData(currentModel);
+  button.$on("download", (e) => {
+    const customSettings = e.detail;
+
+    downloadData(currentModel, customSettings);
   });
+
   button.$on("options", () => {
     chrome.runtime.sendMessage({ name: "showOptions" });
   });
@@ -102,7 +105,7 @@ async function createButton() {
   btn = button;
 }
 
-async function loadSettings() {
+async function loadSettings(customSettings: IState | null) {
   return new Promise<void>((res) => {
     return chrome.runtime
       .sendMessage<IAction>({
@@ -110,6 +113,9 @@ async function loadSettings() {
       })
       .then((data) => {
         settings = data;
+        if (customSettings) {
+          settings = { ...data, ...customSettings }
+        }
         res();
       });
   });
@@ -125,11 +131,11 @@ function getFilenameParts(filename: string) {
   const name = filename.slice(0, lastDotIndex);
   return { name, ext };
 }
-async function downloadData(id: string) {
+async function downloadData(id: string, customSettings: IState | null) {
   try {
     btn.$set({ state: "loading" });
 
-    await loadSettings();
+    await loadSettings(customSettings);
 
     const modelReq: Response = await fetch(`${modelApi}/${id}`);
 
@@ -171,12 +177,14 @@ async function downloadData(id: string) {
       images,
       creatorImages: [],
       galleryImages: [],
+      customSettings: customSettings ? settings : null
     };
 
     if (settings.imageFrom !== "model") {
       const allImages: IImage[] = await fetchAllImages(
         imageApi,
-        modelVersion.id
+        modelVersion.id,
+        settings.imagesLimit
       );
 
       if (allImages) {
@@ -211,6 +219,7 @@ async function downloadData(id: string) {
       }
     });
 
+    console.log("DATA", data)
     chrome.runtime.sendMessage<IAction>({
       name: "download",
       data: data,

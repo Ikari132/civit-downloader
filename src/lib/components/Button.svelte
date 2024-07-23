@@ -1,9 +1,16 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from "svelte";
   import Icon from "./Icon.svelte";
-  import { CogOutline, CheckCircleOutline } from "flowbite-svelte-icons";
+  import {
+    CogOutline,
+    CheckCircleOutline,
+    AdjustmentsHorizontalOutline,
+    AdjustmentsHorizontalSolid,
+  } from "flowbite-svelte-icons";
   import { getSettingsStore, messageStore } from "../helpers";
-  import { currentVersion } from "../constants";
+  import { DEFAULT_STATE, currentVersion } from "../constants";
+  import Settings from "../optionsViews/Settings.svelte";
+  import { writable } from "svelte/store";
 
   export let state: "loading" | "success" | "error" | null = null;
   export let alreadyDownloaded = false;
@@ -12,10 +19,37 @@
 
   const settingsStore = getSettingsStore();
 
+  const downloadSettingsStore = writable({
+    state: { ...DEFAULT_STATE },
+    loading: Promise.resolve() as Promise<any>,
+    updating: Promise.resolve() as Promise<any>,
+    error: null,
+  });
+
+  let customDownload = false;
+
+  downloadSettingsStore.subscribe((value) => {
+    const currentState = value.state;
+    const defaultState = $settingsStore.state;
+
+    const isCustomOptions = Object.keys(defaultState).some((key) => {
+      console.log(key, currentState[key], defaultState[key]);
+      return currentState[key] !== defaultState[key];
+    });
+    console.log("check state", value.state, isCustomOptions);
+    customDownload = isCustomOptions;
+  });
+
   let top = 180;
   let right = 18;
 
+  async function resetCustomState() {
+    await $settingsStore.loading;
+    $downloadSettingsStore.state = { ...$settingsStore.state };
+  }
+
   onMount(() => {
+    resetCustomState();
     document.addEventListener("scroll", () => {
       if (scrollY > 10) {
         top = 80;
@@ -43,6 +77,14 @@
         break;
     }
   });
+
+  let downloadOptionsActive = false;
+  function handleDownloadOptions() {
+    downloadOptionsActive = !downloadOptionsActive;
+
+    if (downloadOptionsActive) {
+    }
+  }
 </script>
 
 {#if popupError}
@@ -59,10 +101,35 @@
       <CheckCircleOutline width="20" height="20" />
     </div>
   {/if}
-  <button class:loading class:success class:error on:click>
+  <button
+    class:loading
+    class:success
+    class:error
+    on:click={() =>
+      dispatch(
+        "download",
+        customDownload ? $downloadSettingsStore.state : null,
+      )}
+  >
     <Icon />
     <div class="loading" />
-    Download
+    {#if customDownload}
+      Custom Download
+    {:else}
+      Download
+    {/if}
+  </button>
+  <button
+    class:loading
+    class:success
+    class:error
+    on:click={handleDownloadOptions}
+  >
+    {#if downloadOptionsActive}
+      <AdjustmentsHorizontalSolid width="20" height="20" />
+    {:else}
+      <AdjustmentsHorizontalOutline width="20" height="20" />
+    {/if}
   </button>
 
   <button on:click={() => dispatch("options")}>
@@ -73,6 +140,13 @@
     {/await}
     <CogOutline width="20" height="20" />
   </button>
+
+  {#if downloadOptionsActive}
+    <div class="download-options">
+      <button on:click={resetCustomState}>Reset</button>
+      <Settings layout="small" settingsStore={downloadSettingsStore} />
+    </div>
+  {/if}
 </div>
 
 <style>
@@ -123,8 +197,16 @@
     color: #fff;
     transition: all 0.3s;
 
-    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica,
-      Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+    font-family:
+      -apple-system,
+      BlinkMacSystemFont,
+      Segoe UI,
+      Roboto,
+      Helvetica,
+      Arial,
+      sans-serif,
+      Apple Color Emoji,
+      Segoe UI Emoji;
   }
 
   @property --angle {
@@ -182,7 +264,7 @@
     color: #ef4444;
     transform: translate(-50%, 0);
   }
-  .error-text:before{
+  .error-text:before {
     content: "";
     display: inline-block;
     width: 14px;
@@ -191,7 +273,7 @@
     border-radius: 50%;
     margin-right: 5px;
   }
-  .error-popup .error-title{
+  .error-popup .error-title {
     font-size: 12px;
     font-weight: bold;
     margin-bottom: 6px;
@@ -200,6 +282,18 @@
     color: #fff;
   }
 
+  .download-options {
+    position: absolute;
+    top: 50px;
+    left: -105px;
+    background: white;
+    width: 300px;
+    height: 400px;
+    border-radius: 6px;
+    overflow: auto;
+
+    padding: 10px;
+  }
   @keyframes flow-gradient {
     from {
       --angle: 0deg;

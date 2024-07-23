@@ -2,7 +2,7 @@ import { writable, type Writable } from "svelte/store";
 import type { ICheckHistoryAction, IDownloadActionData, IState } from "../types";
 import type { IImageResponce } from "../types/image";
 import type { IModel, IModelVersion } from "../types/model";
-import { modelTypes, modelVersionApi } from "./constants";
+import { DEFAULT_STATE, modelTypes, modelVersionApi } from "./constants";
 
 export async function getOptions() {
   return new Promise<{ saveAll: boolean, saveModel: boolean }>((resolve) => {
@@ -38,54 +38,27 @@ messageStore.subscribe((data) => {
 
 export type TStore<T> = {
   state: T;
+  customState: T;
+
   loading: Promise<T>;
   updating: Promise<any>;
   error: string | null;
 };
 export type TWritableStore = Writable<TStore<IState>>;
+
+const storeState: TStore<IState> = {
+  state: DEFAULT_STATE,
+  customState: DEFAULT_STATE,
+  loading: Promise.resolve() as Promise<any>,
+  updating: Promise.resolve() as Promise<any>,
+  error: null,
+};
+const w = writable(storeState);
+
 export const getSettingsStore = () => {
-  const defaultState: IState = {
-    imageSize: "preview",
-    imageName: "model",
-    imageFrom: "model",
-
-    saveModel: true,
-    saveImages: true,
-    saveGallery: false,
-
-    saveFullData: true,
-    saveVersionData: true,
-
-    imagesLimit: 50,
-    // [todo] remove
-    galleryLimit: 10,
-
-    fullDataExt: "civit.full.info",
-    versionDataExt: "civit.info",
-
-    downloadHistory: [],
-    downloadHistoryMeta: {},
-    modelTypes,
-    groupByFolder: false,
-
-    ui: {
-      folderNamesVisible: true,
-    },
-
-    whatsnewVersion: null
-  };
-
-  const storeState: TStore<IState> = {
-    state: defaultState,
-    loading: Promise.resolve() as Promise<any>,
-    updating: Promise.resolve() as Promise<any>,
-    error: null,
-  };
-  const w = writable(storeState);
-
   const loading = new Promise<IState>((resolve) => {
     chrome.storage.local.get().then((result) => {
-      const state = { ...defaultState, ...result } as IState;
+      const state = { ...DEFAULT_STATE, ...result } as IState;
 
       let delay = 0;
       const metaPr = state.downloadHistory.filter(v => !state.downloadHistoryMeta[`${v}`]).map((v) => {
@@ -160,7 +133,13 @@ export const getSettingsStore = () => {
   const getValue = () => {
     return currentState;
   }
-  return { ...w, set, update, getValue };
+  const getState = () => {
+    if (currentState.customState) {
+      return { ...currentState.state, ...currentState.customState }
+    }
+  }
+
+  return { ...w, set, update, getValue, getState };
 };
 
 export function parseExt(ext: string) {
@@ -224,8 +203,9 @@ export function downloadImages(data: IDownloadActionData, state: IState) {
 }
 
 
-export async function fetchAllImages(url: string, modelVersionId: number) {
+export async function fetchAllImages(url: string, modelVersionId: number, limit: number) {
   const allImages: any[] = [];
+  let downloaded = 0;
 
   let ready = false;
 
@@ -234,14 +214,23 @@ export async function fetchAllImages(url: string, modelVersionId: number) {
   try {
     while (!ready) {
       const modelReq: Response = await fetch(totalUrl);
-      
+
       if (!modelReq.ok) {
         throw Error("Failed to fetch all images");
       }
       const modelImages: IImageResponce = await modelReq.json();
       const images = modelImages.items;
 
+      images.some(() => {
+        downloaded++;
+        if (downloaded > limit) {
+          ready = true;
+          return false;
+        }
+      });
+      
       allImages.push(...images);
+
       if (modelImages.metadata.nextPage) {
         totalUrl = modelImages.metadata.nextPage;
       } else {

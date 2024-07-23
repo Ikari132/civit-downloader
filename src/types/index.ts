@@ -37,6 +37,7 @@ export interface IDownloadActionData {
   galleryImages: string[];
   creatorImages: string[];
 
+  customSettings: IState | null;
 }
 
 export type TImageSize = "preview" | "original";

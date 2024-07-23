@@ -8,7 +8,10 @@ async function handleDownload(data: IDownloadActionData) {
 
   await settingsStore.getValue().loading;
 
-  const { state } = settingsStore.getValue();
+  // const { state } = settingsStore.getValue();
+
+  const defaultState = settingsStore.getValue()?.state;
+  const state = data.customSettings ? { ...defaultState, ...data.customSettings } : defaultState;
 
   const downloads = [];
 

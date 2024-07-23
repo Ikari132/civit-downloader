@@ -1,3 +1,5 @@
+import type { IState } from "../types";
+
 export const modelApi = "https://civitai.com/api/v1/models";
 export const modelVersionApi = "https://civitai.com/api/v1/model-versions";
 export const imageApi = "https://civitai.com/api/v1/images";
@@ -28,3 +30,34 @@ export const CHANGELOG = {
     }
   ]
 }
+
+export const DEFAULT_STATE: IState = {
+  imageSize: "preview",
+  imageName: "model",
+  imageFrom: "model",
+
+  saveModel: true,
+  saveImages: true,
+  saveGallery: false,
+
+  saveFullData: true,
+  saveVersionData: true,
+
+  imagesLimit: 50,
+  // [todo] remove
+  galleryLimit: 10,
+
+  fullDataExt: "civit.full.info",
+  versionDataExt: "civit.info",
+
+  downloadHistory: [],
+  downloadHistoryMeta: {},
+  modelTypes,
+  groupByFolder: false,
+
+  ui: {
+    folderNamesVisible: true,
+  },
+
+  whatsnewVersion: null
+};

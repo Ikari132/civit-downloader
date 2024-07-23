@@ -3,6 +3,7 @@
   import { ChevronDownSolid, ChevronRightSolid } from "flowbite-svelte-icons";
 
   export let settingsStore: TWritableStore;
+  export let layout: "full" | "small" = "full";
 </script>
 
 <label>
@@ -16,46 +17,48 @@
     bind:checked={$settingsStore.state.saveModel}
   />
 </label>
-<label>
-  <div class="description">
-    <h3>Group by folder</h3>
-  </div>
-  <input
-    type="checkbox"
-    name="group-folder"
-    id="group-folder"
-    bind:checked={$settingsStore.state.groupByFolder}
-  />
-</label>
-{#if $settingsStore.state.groupByFolder}
-  <h4>
-    <label class="label_collapsible">
-      {#if $settingsStore.state.ui.folderNamesVisible}
-        <ChevronDownSolid width="14" height="14" />
-      {:else}
-        <ChevronRightSolid width="14" height="14" />
-      {/if}
-      <input
-        type="checkbox"
-        hidden
-        bind:checked={$settingsStore.state.ui.folderNamesVisible}
-      />
-      <span style="padding:0 5px;"> Folder names</span>
-    </label>
-  </h4>
-
-  {#if $settingsStore.state.ui.folderNamesVisible}
-    {#each Object.keys($settingsStore.state.modelTypes) as modelTypeKey}
-      <label class="label_level_2">
-        <div class="description">
-          <h3>{modelTypeKey}</h3>
-        </div>
+{#if layout === "full"}
+  <label>
+    <div class="description">
+      <h3>Group by folder</h3>
+    </div>
+    <input
+      type="checkbox"
+      name="group-folder"
+      id="group-folder"
+      bind:checked={$settingsStore.state.groupByFolder}
+    />
+  </label>
+  {#if $settingsStore.state.groupByFolder}
+    <h4>
+      <label class="label_collapsible">
+        {#if $settingsStore.state.ui.folderNamesVisible}
+          <ChevronDownSolid width="14" height="14" />
+        {:else}
+          <ChevronRightSolid width="14" height="14" />
+        {/if}
         <input
-          type="text"
-          bind:value={$settingsStore.state.modelTypes[modelTypeKey]}
+          type="checkbox"
+          hidden
+          bind:checked={$settingsStore.state.ui.folderNamesVisible}
         />
+        <span style="padding:0 5px;"> Folder names</span>
       </label>
-    {/each}
+    </h4>
+
+    {#if $settingsStore.state.ui.folderNamesVisible}
+      {#each Object.keys($settingsStore.state.modelTypes) as modelTypeKey}
+        <label class="label_level_2">
+          <div class="description">
+            <h3>{modelTypeKey}</h3>
+          </div>
+          <input
+            type="text"
+            bind:value={$settingsStore.state.modelTypes[modelTypeKey]}
+          />
+        </label>
+      {/each}
+    {/if}
   {/if}
 {/if}
 
@@ -84,19 +87,22 @@
     <option value="original">Original</option>
   </select>
 </label>
-<label class:disabled={!$settingsStore.state.saveImages}>
-  <div class="description">
-    <h3>Image name</h3>
-  </div>
-  <select
-    name="image-name"
-    id="image-name"
-    bind:value={$settingsStore.state.imageName}
-  >
-    <option value="model">Use model name</option>
-    <option value="original">Original</option>
-  </select>
-</label>
+{#if layout === "full"}
+  <label class:disabled={!$settingsStore.state.saveImages}>
+    <div class="description">
+      <h3>Image name</h3>
+    </div>
+    <select
+      name="image-name"
+      id="image-name"
+      bind:value={$settingsStore.state.imageName}
+    >
+      <option value="model">Use model name</option>
+      <option value="original">Original</option>
+    </select>
+  </label>
+{/if}
+
 <label class:disabled={!$settingsStore.state.imageFrom}>
   <div class="description">
     <h3>Images from</h3>
@@ -136,17 +142,19 @@
     bind:checked={$settingsStore.state.saveVersionData}
   />
 </label>
-<label class:disabled={!$settingsStore.state.saveVersionData}>
-  <div class="description">
-    <h3>Version info extension</h3>
-  </div>
-  <input
-    type="text"
-    name="version-data-ext"
-    id="version-data-ext"
-    bind:value={$settingsStore.state.versionDataExt}
-  />
-</label>
+{#if layout === "full"}
+  <label class:disabled={!$settingsStore.state.saveVersionData}>
+    <div class="description">
+      <h3>Version info extension</h3>
+    </div>
+    <input
+      type="text"
+      name="version-data-ext"
+      id="version-data-ext"
+      bind:value={$settingsStore.state.versionDataExt}
+    />
+  </label>
+{/if}
 <label>
   <div class="description">
     <h3>Save full model info</h3>
@@ -158,17 +166,19 @@
     bind:checked={$settingsStore.state.saveFullData}
   />
 </label>
-<label class:disabled={!$settingsStore.state.saveFullData}>
-  <div class="description">
-    <h3>Full model info extension</h3>
-  </div>
-  <input
-    type="text"
-    name="full-data-ext"
-    id="full-data-ext"
-    bind:value={$settingsStore.state.fullDataExt}
-  />
-</label>
+{#if layout === "full"}
+  <label class:disabled={!$settingsStore.state.saveFullData}>
+    <div class="description">
+      <h3>Full model info extension</h3>
+    </div>
+    <input
+      type="text"
+      name="full-data-ext"
+      id="full-data-ext"
+      bind:value={$settingsStore.state.fullDataExt}
+    />
+  </label>
+{/if}
 
 <style>
   h3 {
@@ -218,17 +228,28 @@
     min-height: 32px;
     padding: 8px;
 
-    box-shadow: rgb(255, 255, 255) 0px 0px 0px 0px inset,
-      rgb(209, 213, 219) 0px 0px 0px 1px inset, rgba(0, 0, 0, 0) 0px 0px 0px 0px;
+    background: #f8fafc;
+    color: #1e293b;
+    font-size: 14px;
+
+    box-shadow:
+      rgb(255, 255, 255) 0px 0px 0px 0px inset,
+      rgb(209, 213, 219) 0px 0px 0px 1px inset,
+      rgba(0, 0, 0, 0) 0px 0px 0px 0px;
   }
 
   select {
     background-image: linear-gradient(45deg, transparent 50%, gray 50%),
       linear-gradient(135deg, gray 50%, transparent 50%),
       linear-gradient(to right, #ccc, #ccc);
-    background-position: calc(100% - 15px) calc(1em + 2px),
-      calc(100% - 10px) calc(1em + 2px), calc(100% - 2.2em) 0.5em;
-    background-size: 5px 5px, 5px 5px, 1px 1.5em;
+    background-position:
+      calc(100% - 15px) calc(1em + 2px),
+      calc(100% - 10px) calc(1em + 2px),
+      calc(100% - 2.2em) 0.5em;
+    background-size:
+      5px 5px,
+      5px 5px,
+      1px 1.5em;
     background-repeat: no-repeat;
 
     margin: 0;
