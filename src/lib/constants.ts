@@ -37,7 +37,7 @@ export const modelTypes = {
   Other: "Other"
 }
 
-export const currentVersion = "1.5.4";
+export const currentVersion = "1.5.5";
 
 export const CHANGELOG = {
   "1.5.3":[
@@ -48,6 +48,11 @@ export const CHANGELOG = {
   "1.5.4":[
     {
       text:"Fixed an issue where training_data.zip was downloaded instead of the model file"
+    }
+  ],
+  "1.5.5":[
+    {
+      text:"Added support for civitai.red domain"
     }
   ]
 }
