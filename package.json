@@ -1,18 +1,19 @@
 {
   "name": "civit-downloader",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "main": "index.js",
   "author": "Anton Aksionau <ikari808@gmail.com>",
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
-    "build": "pnpm build:chrome&&pnpm build:firefox",
+    "generate-manifest": "node scripts/manifest.mjs",
+    "build": "pnpm generate-manifest && pnpm build:chrome && pnpm build:firefox",
     "build:chrome": "rollup -c && pnpm lint && web-ext build -s ./static --overwrite-dest --artifacts-dir=dist/chrome",
     "build:firefox": "rollup --config rollup.config.firefox.mjs && pnpm lint && web-ext build -s ./static_ff --overwrite-dest --artifacts-dir=dist/firefox",
-    "watch": "rollup -c -w",
-    "watch:firefox": "rollup -w --config rollup.config.firefox.mjs",
+    "watch": "pnpm generate-manifest && rollup -c -w",
+    "watch:firefox": "pnpm generate-manifest && rollup -w --config rollup.config.firefox.mjs",
     "open": "pnpm open:chrome",
-    "open:chrome": "web-ext run -s ./static --target=chromium",
-    "open:firefox": "web-ext run -s ./static --target=firefox-desktop",
+    "open:chrome": "pnpm generate-manifest && web-ext run -s ./static --target=chromium",
+    "open:firefox": "pnpm generate-manifest && web-ext run -s ./static --target=firefox-desktop",
     "rollup": "rollup -c",
     "test": "playwright test",
     "lint": "eslint src",
@@ -49,7 +50,7 @@
     "svelte-check": "^3.3.0",
     "svelte-preprocess": "^5.0.1",
     "typescript": "4.9.5",
-    "web-ext": "^7.6.2"
+    "web-ext": "^10.1.0"
   },
   "dependencies": {
     "flowbite-svelte-icons": "^0.2.5"

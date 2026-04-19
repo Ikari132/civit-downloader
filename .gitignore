@@ -3,10 +3,7 @@ node_modules
 .DS_Store
 
 static
-!static/manifest.json
-
 static_ff
-!static_ff/manifest.json
 
 screenshots
 
@@ -18,3 +15,6 @@ source.zip
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+# Auto-generated from package.json by scripts/manifest.mjs
+src/lib/version.ts
