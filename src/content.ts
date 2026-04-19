@@ -4,7 +4,7 @@ import type { SvelteComponentTyped } from "svelte";
 import type { IModel } from "./types/model";
 import type { IImage } from "./types/image";
 import { fetchAllImages, messageStore } from "./lib/helpers";
-import { imageApi, modelApi } from "./lib/constants";
+import { getImageApi, getModelApi } from "./lib/constants";
 
 let currentURL = null;
 let currentVersion = null;
@@ -131,7 +131,7 @@ async function downloadData(id: string) {
 
     await loadSettings();
 
-    const modelReq: Response = await fetch(`${modelApi}/${id}`);
+    const modelReq: Response = await fetch(`${getModelApi()}/${id}`);
 
     if (!modelReq.ok) {
       messageStore.set({ status: "error", message: "Failed to fetch model data" });
@@ -181,7 +181,7 @@ async function downloadData(id: string) {
 
     if (settings.imageFrom !== "model") {
       const allImages: IImage[] = await fetchAllImages(
-        imageApi,
+        getImageApi(),
         modelVersion.id
       );
 

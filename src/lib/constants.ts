@@ -2,6 +2,24 @@ export const modelApi = "https://civitai.com/api/v1/models";
 export const modelVersionApi = "https://civitai.com/api/v1/model-versions";
 export const imageApi = "https://civitai.com/api/v1/images";
 
+export function getCivitBaseUrl() {
+  const host = location.hostname;
+  if (host === "civitai.com" || host.match(/^civitai\.[a-z.]+$/)) {
+    return location.origin;
+  }
+  return "https://civitai.com";
+}
+
+export function getModelApi() {
+  return `${getCivitBaseUrl()}/api/v1/models`;
+}
+export function getModelVersionApi() {
+  return `${getCivitBaseUrl()}/api/v1/model-versions`;
+}
+export function getImageApi() {
+  return `${getCivitBaseUrl()}/api/v1/images`;
+}
+
 export const modelTypes = {
   Checkpoint: "Checkpoint",
   TextualInversion: "TextualInversion",
